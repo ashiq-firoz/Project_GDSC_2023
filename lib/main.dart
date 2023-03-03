@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:project_17/Presentation/home.dart';
+import 'package:project_17/Presentation/screens/blue.dart';
 
 void main() {
   runApp(const App());
@@ -21,10 +21,6 @@ class Screen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return const Scaffold(
-      body: SafeArea(
-        child: HomeScreen(),
-      ),
-    );
+    return BlueScreen();
   }
 }
