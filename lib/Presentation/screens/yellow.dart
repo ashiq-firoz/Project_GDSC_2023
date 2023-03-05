@@ -2,17 +2,16 @@ import 'package:flutter/material.dart';
 import 'package:project_17/Presentation/Colors/colors.dart';
 import 'package:project_17/Presentation/screens/green.dart';
 import 'package:project_17/Presentation/screens/weather.dart';
-import 'package:project_17/Presentation/screens/yellow.dart';
 import 'package:project_17/Presentation/widgets/bottomContainer.dart';
 import 'package:project_17/Presentation/widgets/counter.dart';
 
-class BlueScreen extends StatelessWidget {
-  const BlueScreen({super.key});
+class YellowScreen extends StatelessWidget {
+  const YellowScreen({super.key});
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: colourblue,
+      backgroundColor: colouryellow,
       appBar: AppBar(
         backgroundColor: Colors.transparent,
         elevation: 0.0,
@@ -23,7 +22,7 @@ class BlueScreen extends StatelessWidget {
         title: Text("Level1"),
       ),
       body: const Blue1(),
-      bottomNavigationBar: const BottomAppBar(
+      bottomNavigationBar: BottomAppBar(
         color: colorbottomcont,
         child: Bottombar(),
       ),
@@ -69,8 +68,9 @@ class Blue1 extends StatelessWidget {
               Ilogo(icon: Icons.map_outlined),
             ],
           ),
+          const SizedBox(height: 40.0),
           const Controls(
-            child: Bottomcolumn(),
+            child: bottomColumn(),
           ),
         ],
       ),
@@ -93,7 +93,7 @@ class Bottombar extends StatelessWidget {
               Navigator.push(context,
                   MaterialPageRoute(builder: (context) => YellowScreen()));
             },
-            icon: const Icon(
+            icon: Icon(
               Icons.cloud,
               color: colouricon,
             )),
@@ -102,7 +102,7 @@ class Bottombar extends StatelessWidget {
               Navigator.push(context,
                   MaterialPageRoute(builder: (context) => GreenScreen()));
             },
-            icon: const Icon(
+            icon: Icon(
               Icons.cloud,
               color: colouricon,
             )),
@@ -111,7 +111,7 @@ class Bottombar extends StatelessWidget {
               Navigator.push(context,
                   MaterialPageRoute(builder: (context) => WeatherScreen()));
             },
-            icon: const Icon(
+            icon: Icon(
               Icons.cloud,
               color: colouricon,
             )),
@@ -120,8 +120,8 @@ class Bottombar extends StatelessWidget {
   }
 }
 
-class Bottomcolumn extends StatelessWidget {
-  const Bottomcolumn({super.key});
+class bottomColumn extends StatelessWidget {
+  const bottomColumn({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -132,12 +132,7 @@ class Bottomcolumn extends StatelessWidget {
           style: TextStyle(color: colourtext),
         ),
         SizedBox(
-          height: 40.0, // change this and fill with content
-        ),
-        Icon(
-          Icons.camera_alt_outlined,
-          color: colouricon,
-          size: 20.0,
+          height: 320.0, // change this and fill with content
         )
       ],
     );
