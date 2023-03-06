@@ -1,9 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:project_17/Presentation/Colors/colors.dart';
+import 'package:project_17/Presentation/screens/blue.dart';
 import 'package:project_17/Presentation/screens/weather.dart';
 import 'package:project_17/Presentation/screens/yellow.dart';
 import 'package:project_17/Presentation/widgets/bottomContainer.dart';
 import 'package:project_17/Presentation/widgets/counter.dart';
+
+import '../Icons/icons.dart';
 
 class GreenScreen extends StatelessWidget {
   const GreenScreen({super.key});
@@ -11,18 +14,19 @@ class GreenScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      extendBodyBehindAppBar: true,
       backgroundColor: colourgreen,
       appBar: AppBar(
         backgroundColor: Colors.transparent,
         elevation: 0.0,
         leading: const Icon(
-          Icons.water_drop,
+          greenLogo,
           color: Colors.white,
         ),
         title: Text("Level1"),
       ),
       body: const Blue1(),
-      bottomNavigationBar: BottomAppBar(
+      bottomNavigationBar: const BottomAppBar(
         color: colorbottomcont,
         child: Bottombar(),
       ),
@@ -68,8 +72,11 @@ class Blue1 extends StatelessWidget {
               Ilogo(icon: Icons.map_outlined),
             ],
           ),
+          const SizedBox(
+            height: 110,
+          ),
           const Controls(
-            child: bottomColumn(),
+            child: Bottomcolumn(),
           ),
         ],
       ),
@@ -88,39 +95,42 @@ class Bottombar extends StatelessWidget {
       children: [
         //icons should be changed
         IconButton(
-            onPressed: () {
-              Navigator.push(context,
-                  MaterialPageRoute(builder: (context) => YellowScreen()));
-            },
-            icon: Icon(
-              Icons.cloud,
-              color: colouricon,
-            )),
+          onPressed: () {
+            Navigator.push(context,
+                MaterialPageRoute(builder: (context) => const BlueScreen()));
+          },
+          icon: const Logo(
+            icon: blueLogo,
+            bgcolor: colourblue,
+          ),
+        ),
         IconButton(
-            onPressed: () {
-              Navigator.push(context,
-                  MaterialPageRoute(builder: (context) => GreenScreen()));
-            },
-            icon: Icon(
-              Icons.cloud,
-              color: colouricon,
-            )),
+          onPressed: () {
+            Navigator.push(context,
+                MaterialPageRoute(builder: (context) => const YellowScreen()));
+          },
+          icon: const Logo(
+            icon: yellowLogo,
+            bgcolor: colouryellow,
+          ),
+        ),
         IconButton(
-            onPressed: () {
-              Navigator.push(context,
-                  MaterialPageRoute(builder: (context) => WeatherScreen()));
-            },
-            icon: Icon(
-              Icons.cloud,
-              color: colouricon,
-            )),
+          onPressed: () {
+            Navigator.push(context,
+                MaterialPageRoute(builder: (context) => const WeatherScreen()));
+          },
+          icon: const Logo(
+            icon: weatherLogo,
+            bgcolor: colourweather,
+          ),
+        ),
       ],
     );
   }
 }
 
-class bottomColumn extends StatelessWidget {
-  const bottomColumn({super.key});
+class Bottomcolumn extends StatelessWidget {
+  const Bottomcolumn({super.key});
 
   @override
   Widget build(BuildContext context) {

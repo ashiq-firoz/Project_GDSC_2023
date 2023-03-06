@@ -28,3 +28,6 @@ const colouricon = Colors.white;
 //Icon background
 const coloriconbg = Color.fromARGB(66, 149, 181, 241);
 //icon background end
+
+//Bottom Container Icon background color
+const coloriconbtmbg = Color.fromARGB(204, 149, 154, 163);
