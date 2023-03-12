@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:project_17/Presentation/Colors/colors.dart';
 
 class Controls extends StatelessWidget {
   final child;
@@ -10,7 +11,7 @@ class Controls extends StatelessWidget {
       decoration: const BoxDecoration(
         borderRadius: BorderRadius.only(
             topLeft: Radius.circular(20.0), topRight: Radius.circular(20.0)),
-        color: Colors.black,
+        color: colorbottomcont,
       ),
       child: Center(
         child: child,

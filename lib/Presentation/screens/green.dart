@@ -23,9 +23,9 @@ class GreenScreen extends StatelessWidget {
           greenLogo,
           color: Colors.white,
         ),
-        title: Text("Level1"),
+        title: const Text("Level1"),
       ),
-      body: const Blue1(),
+      body: const Green1(),
       bottomNavigationBar: const BottomAppBar(
         color: colorbottomcont,
         child: Bottombar(),
@@ -34,13 +34,14 @@ class GreenScreen extends StatelessWidget {
   }
 }
 
-class Blue1 extends StatelessWidget {
-  const Blue1({super.key});
+class Green1 extends StatelessWidget {
+  const Green1({super.key});
 
   @override
   Widget build(BuildContext context) {
     return SafeArea(
       child: ListView(
+        padding: const EdgeInsets.only(top: 0.0),
         children: [
           const SizedBox(
             height: 50.0,
@@ -48,32 +49,58 @@ class Blue1 extends StatelessWidget {
           Row(
             mainAxisAlignment: MainAxisAlignment.start,
             children: const [
-              Counter(), //counter.dart
+              Cardout(), //counter.dart
               SizedBox(
                 width: 60.0,
               ),
-              Stats(
-                  icon1: Icons.currency_rupee,
-                  icon2: Icons.recycling) //stats class defined below
+              Stats(value: "0") //stats class defined below
             ],
           ),
+          const Center(
+              child: Text(
+            "Your Plants",
+            style: TextStyle(fontSize: 20.0, fontWeight: FontWeight.w600),
+          )),
           const SizedBox(
             height: 50.0,
           ),
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceEvenly,
             children: const [
-              Ilogo(
-                  icon: Icons
-                      .new_releases), // friends logo, Ilogo class defined below
+              Text(
+                "Coins",
+                style: TextStyle(fontSize: 20.0, fontWeight: FontWeight.w600),
+              ), // friends logo, Ilogo class defined below
               SizedBox(
                 width: 40.0,
               ),
-              Ilogo(icon: Icons.map_outlined),
+              Text(
+                "Verifications",
+                style: TextStyle(fontSize: 20.0, fontWeight: FontWeight.w600),
+              ),
             ],
           ),
           const SizedBox(
-            height: 110,
+            height: 10.0,
+          ),
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+            children: const [
+              Text(
+                "1",
+                style: TextStyle(fontSize: 20.0, fontWeight: FontWeight.w600),
+              ),
+              SizedBox(
+                width: 40.0,
+              ),
+              Text(
+                "100",
+                style: TextStyle(fontSize: 20.0, fontWeight: FontWeight.w600),
+              ),
+            ],
+          ),
+          const SizedBox(
+            height: 60.0,
           ),
           const Controls(
             child: Bottomcolumn(),
@@ -135,13 +162,18 @@ class Bottomcolumn extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Column(
-      children: [
-        Text(
-          "hello",
-          style: TextStyle(color: colourtext),
-        ),
+      children: const [
         SizedBox(
-          height: 320.0, // change this and fill with content
+          height: 30.0,
+        ),
+        Ilogo(icon: Icons.add_a_photo_outlined, size: 60.0),
+        Center(
+            child: Text(
+          "Add a plant",
+          style: TextStyle(fontSize: 30.0, color: colourtext),
+        )),
+        SizedBox(
+          height: 120.0,
         )
       ],
     );
@@ -149,41 +181,68 @@ class Bottomcolumn extends StatelessWidget {
 }
 
 class Stats extends StatelessWidget {
-  final icon1;
-  final icon2;
-  const Stats({super.key, required this.icon1, required this.icon2});
+  final value;
+  final size = 50.0;
+  const Stats({super.key, required this.value});
 
   @override
   Widget build(BuildContext context) {
-    return Column(
-      mainAxisAlignment: MainAxisAlignment.start,
-      children: [
-        Row(
-          children: [Ilogo(icon: icon1), Text("1")],
-        ),
-        Row(
-          children: [Ilogo(icon: icon2), Text("100")],
-        ),
-      ],
+    return Text(
+      value,
+      style: const TextStyle(
+        color: Colors.black,
+        fontSize: 50.0,
+      ),
     );
   }
 }
 
 class Ilogo extends StatelessWidget {
   final icon;
-  const Ilogo({super.key, required this.icon});
+  final size;
+  const Ilogo({super.key, required this.icon, required this.size});
 
   @override
   Widget build(BuildContext context) {
     return Padding(
-      padding: const EdgeInsets.all(22.0),
+      padding: const EdgeInsets.fromLTRB(22.0, 22.0, 22.0, 8.0),
       child: Container(
+        width: 180,
         decoration: BoxDecoration(
           color: coloriconbg,
           borderRadius: BorderRadius.circular(30.0),
         ),
         child: Center(
-          child: Icon(icon),
+          child: Icon(
+            icon,
+            size: size,
+          ),
+        ),
+      ),
+    );
+  }
+}
+
+//card
+
+class Cardout extends StatelessWidget {
+  const Cardout({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return Padding(
+      padding: const EdgeInsets.fromLTRB(33.0, 16.0, 2.0, 0.0),
+      child: GestureDetector(
+        onTap: () => {print("hello")}, //change it to scroll down
+        child: Container(
+          decoration: BoxDecoration(
+            borderRadius: BorderRadius.circular(20.0),
+            color: const Color.fromARGB(125, 217, 217, 217),
+          ),
+          child: const Padding(
+            padding: EdgeInsets.all(8.0),
+            child: YourtreeIcon(),
+          ),
         ),
       ),
     );

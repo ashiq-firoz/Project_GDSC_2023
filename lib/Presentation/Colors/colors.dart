@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 //Background colors
 
 const colourblue = Color.fromARGB(255, 55, 150, 212);
-const colourgreen = Color.fromARGB(255, 55, 212, 55);
+const colourgreen = Color.fromARGB(255, 85, 204, 135);
 const colouryellow = Color.fromARGB(255, 174, 224, 58);
 const colourweather = Color.fromARGB(255, 68, 151, 206);
 

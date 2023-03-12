@@ -36,3 +36,17 @@ class Logo extends StatelessWidget {
     );
   }
 }
+
+// Your trees card icon
+class YourtreeIcon extends StatelessWidget {
+  const YourtreeIcon({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return Icon(
+      Icons.forest_rounded,
+      color: Colors.black,
+      size: 120.0,
+    );
+  }
+}
