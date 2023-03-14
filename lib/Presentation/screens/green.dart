@@ -4,8 +4,6 @@ import 'package:project_17/Presentation/screens/blue.dart';
 import 'package:project_17/Presentation/screens/weather.dart';
 import 'package:project_17/Presentation/screens/yellow.dart';
 import 'package:project_17/Presentation/widgets/bottomContainer.dart';
-import 'package:project_17/Presentation/widgets/counter.dart';
-
 import '../Icons/icons.dart';
 
 class GreenScreen extends StatelessWidget {
@@ -162,19 +160,104 @@ class Bottomcolumn extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Column(
-      children: const [
-        SizedBox(
+      children: [
+        const SizedBox(
           height: 30.0,
         ),
-        Ilogo(icon: Icons.add_a_photo_outlined, size: 60.0),
-        Center(
+        const Ilogo(icon: Icons.add_a_photo_outlined, size: 60.0),
+        const Center(
             child: Text(
-          "Add a plant",
+          "Add a plant", //"Verify your plants"
           style: TextStyle(fontSize: 30.0, color: colourtext),
         )),
+        const Center(
+            child: Text(
+          "Verify nearby plant", //"Verify your plants"
+          style: TextStyle(fontSize: 30.0, color: colourtext),
+        )),
+        const SizedBox(
+          height: 60.0,
+        ),
+
+        //map widget should be placed here
+
         SizedBox(
-          height: 120.0,
-        )
+          height: 300,
+          child: ListView(
+            scrollDirection: Axis.horizontal,
+            padding: const EdgeInsets.only(left: 16.0, right: 16.0),
+            children: [
+              MerchCard(),
+              MerchCard(),
+              MerchCard(),
+              MerchCard(),
+            ],
+          ),
+        ),
+        const SizedBox(
+          height: 80.0,
+        ),
+        const Padding(
+          padding: EdgeInsets.only(bottom: 10.0),
+          child: Center(
+            child: Text(
+              "Your Plants",
+              style: TextStyle(
+                color: colourtext,
+                fontSize: 40.0,
+              ),
+            ),
+          ),
+        ),
+        SizedBox(
+          height: 400,
+          child: ListView(
+            scrollDirection: Axis.vertical,
+            children: const [
+              //change this to a function generating list after adding db
+              Plants(
+                stage: "newbi",
+                coins: "10",
+                name: "p1",
+              ),
+              SizedBox(
+                height: 40.0,
+              ),
+              Plants(
+                stage: "newbi",
+                coins: "10",
+                name: "p1",
+              ),
+              SizedBox(
+                height: 40.0,
+              ),
+              Plants(
+                stage: "newbi",
+                coins: "10",
+                name: "p1",
+              ),
+              SizedBox(
+                height: 40.0,
+              ),
+              Plants(
+                stage: "newbi",
+                coins: "10",
+                name: "p1",
+              ),
+              SizedBox(
+                height: 40.0,
+              ),
+              Plants(
+                stage: "newbi",
+                coins: "10",
+                name: "p1",
+              ),
+            ],
+          ),
+        ),
+        const SizedBox(
+          height: 50.0,
+        ),
       ],
     );
   }
@@ -223,7 +306,83 @@ class Ilogo extends StatelessWidget {
   }
 }
 
-//card
+//Your plants
+class Plants extends StatelessWidget {
+  final stage;
+  final coins;
+  final name;
+  const Plants(
+      {super.key,
+      required this.stage,
+      required this.coins,
+      required this.name});
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      decoration: BoxDecoration(
+        color: Colors.grey[400],
+        borderRadius: BorderRadius.circular(20),
+      ),
+      child: ListTile(
+        leading: const Icon(
+          Icons.forest_rounded,
+          color: colouricon,
+          size: 30,
+        ),
+        title: Row(
+          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+          children: [
+            Text(
+              name,
+              style: const TextStyle(color: colourtext),
+            ),
+            Column(
+              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+              children: [
+                const Text(
+                  "Stage",
+                  style: TextStyle(color: colourtext),
+                ),
+                const SizedBox(
+                  height: 10.0,
+                ),
+                Text(
+                  stage,
+                  style: const TextStyle(color: colourtext),
+                )
+              ],
+            ),
+            Column(
+              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+              children: [
+                const Text(
+                  "Coins earned",
+                  style: TextStyle(color: colourtext),
+                ),
+                const SizedBox(
+                  height: 10.0,
+                ),
+                Text(
+                  coins,
+                  style: const TextStyle(color: colourtext),
+                )
+              ],
+            )
+          ],
+        ),
+        trailing: IconButton(
+            onPressed: () {},
+            icon: const Icon(
+              Icons.camera,
+              color: colouricon,
+            )),
+      ),
+    );
+  }
+}
+
+//cardout
 
 class Cardout extends StatelessWidget {
   const Cardout({super.key});
@@ -243,6 +402,31 @@ class Cardout extends StatelessWidget {
             padding: EdgeInsets.all(8.0),
             child: YourtreeIcon(),
           ),
+        ),
+      ),
+    );
+  }
+}
+
+//merch card ads
+
+class MerchCard extends StatelessWidget {
+  const MerchCard({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return Padding(
+      padding: const EdgeInsets.fromLTRB(33.0, 16.0, 2.0, 0.0),
+      child: GestureDetector(
+        onTap: () => {print("hello merch")}, //change it to scroll down
+        child: Container(
+          width: 200,
+          height: 200,
+          decoration: BoxDecoration(
+            borderRadius: BorderRadius.circular(20.0),
+            color: Color.fromARGB(255, 231, 229, 229),
+          ),
+          child: Image(image: AssetImage("assets/images/ad.jpeg")),
         ),
       ),
     );
