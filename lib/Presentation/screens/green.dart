@@ -321,7 +321,7 @@ class Plants extends StatelessWidget {
   Widget build(BuildContext context) {
     return Container(
       decoration: BoxDecoration(
-        color: Colors.grey[400],
+        color: Colors.grey[700],
         borderRadius: BorderRadius.circular(20),
       ),
       child: ListTile(
