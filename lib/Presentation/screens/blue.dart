@@ -1,3 +1,5 @@
+import 'dart:math';
+
 import 'package:flutter/material.dart';
 import 'package:project_17/Presentation/Colors/colors.dart';
 import 'package:project_17/Presentation/Icons/icons.dart';
@@ -39,46 +41,59 @@ class Blue1 extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return SafeArea(
-      child: ListView(
-        children: [
-          const SizedBox(
-            height: 50.0,
+    return Container(
+          decoration: BoxDecoration(
+            gradient: LinearGradient(
+              colors: [
+                Color.fromARGB(255, 0, 247, 255),
+                Color.fromARGB(255, 0, 174, 255),
+                Color.fromARGB(255, 55, 85, 255),
+                Color.fromARGB(255, 1, 13, 255),
+              ],
+              transform: GradientRotation(pi/2),
+            )
           ),
-          Row(
-            mainAxisAlignment: MainAxisAlignment.start,
-            children: const [
-              Counter(), //counter.dart
-              SizedBox(
-                width: 60.0,
-              ),
-              Stats(
-                  icon1: Icons.currency_rupee,
-                  icon2: Icons.recycling) //stats class defined below
-            ],
-          ),
-          const SizedBox(
-            height: 50.0,
-          ),
-          Row(
-            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-            children: const [
-              Ilogo(
-                  icon: Icons
-                      .new_releases), // friends logo, Ilogo class defined below
-              SizedBox(
-                width: 40.0,
-              ),
-              Ilogo(icon: Icons.map_outlined),
-            ],
-          ),
-          const SizedBox(
-            height: 110,
-          ),
-          const Controls(
-            child: Bottomcolumn(),
-          ),
-        ],
+      child: SafeArea(
+        child: ListView(
+          children: [
+            const SizedBox(
+              height: 50.0,
+            ),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.start,
+              children: const [
+                Counter(), //counter.dart
+                SizedBox(
+                  width: 60.0,
+                ),
+                Stats(
+                    icon1: Icons.currency_rupee,
+                    icon2: Icons.recycling) //stats class defined below
+              ],
+            ),
+            const SizedBox(
+              height: 50.0,
+            ),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+              children: const [
+                Ilogo(
+                    icon: Icons
+                        .new_releases), // friends logo, Ilogo class defined below
+                SizedBox(
+                  width: 40.0,
+                ),
+                Ilogo(icon: Icons.map_outlined),
+              ],
+            ),
+            const SizedBox(
+              height: 110,
+            ),
+            const Controls(
+              child: Bottomcolumn(),
+            ),
+          ],
+        ),
       ),
     );
   }

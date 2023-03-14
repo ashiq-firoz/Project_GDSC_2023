@@ -1,3 +1,5 @@
+import 'dart:math';
+
 import 'package:flutter/material.dart';
 import 'package:project_17/Presentation/Colors/colors.dart';
 import 'package:project_17/Presentation/screens/blue.dart';
@@ -25,7 +27,7 @@ class YellowScreen extends StatelessWidget {
         ),
         title: Text("Level1"),
       ),
-      body: const Blue1(),
+      body: const Yellow1(),
       bottomNavigationBar: const BottomAppBar(
         color: colorbottomcont,
         child: Bottombar(),
@@ -34,51 +36,64 @@ class YellowScreen extends StatelessWidget {
   }
 }
 
-class Blue1 extends StatelessWidget {
-  const Blue1({super.key});
+class Yellow1 extends StatelessWidget {
+  const Yellow1({super.key});
 
   @override
   Widget build(BuildContext context) {
-    return SafeArea(
-      child: ListView(
-        children: [
-          const SizedBox(
-            height: 50.0,
+    return Container(
+      decoration: BoxDecoration(
+            gradient: LinearGradient(
+              colors: [
+                Color.fromARGB(255, 255, 255, 82),
+                Color.fromARGB(255, 233, 255, 36),
+                Color.fromARGB(255, 238, 255, 0),
+                Color.fromARGB(255, 255, 242, 1),
+              ],
+              transform: GradientRotation(pi/2),
+            )
           ),
-          Row(
-            mainAxisAlignment: MainAxisAlignment.start,
-            children: const [
-              Counter(), //counter.dart
-              SizedBox(
-                width: 60.0,
-              ),
-              Stats(
-                  icon1: Icons.currency_rupee,
-                  icon2: Icons.recycling) //stats class defined below
-            ],
-          ),
-          const SizedBox(
-            height: 50.0,
-          ),
-          Row(
-            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-            children: const [
-              Ilogo(
-                  icon: Icons
-                      .new_releases), // friends logo, Ilogo class defined below
-              SizedBox(
-                width: 40.0,
-              ),
-              Ilogo(icon: Icons.map_outlined),
-            ],
-          ),
-          const SizedBox(
-            height: 110,
-          ),
-          const Controls(
-            child: Bottomcolumn(),
-          ),
-        ],
+      child: SafeArea(
+        child: ListView(
+          children: [
+            const SizedBox(
+              height: 50.0,
+            ),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.start,
+              children: const [
+                Counter(), //counter.dart
+                SizedBox(
+                  width: 60.0,
+                ),
+                Stats(
+                    icon1: Icons.currency_rupee,
+                    icon2: Icons.recycling) //stats class defined below
+              ],
+            ),
+            const SizedBox(
+              height: 50.0,
+            ),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+              children: const [
+                Ilogo(
+                    icon: Icons
+                        .new_releases), // friends logo, Ilogo class defined below
+                SizedBox(
+                  width: 40.0,
+                ),
+                Ilogo(icon: Icons.map_outlined),
+              ],
+            ),
+            const SizedBox(
+              height: 110,
+            ),
+            const Controls(
+              child: Bottomcolumn(),
+            ),
+          ],
+        ),
       ),
     );
   }

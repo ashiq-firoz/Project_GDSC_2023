@@ -1,3 +1,5 @@
+import 'dart:math';
+
 import 'package:flutter/material.dart';
 import 'package:project_17/Presentation/Colors/colors.dart';
 import 'package:project_17/Presentation/screens/blue.dart';
@@ -37,73 +39,86 @@ class Green1 extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return SafeArea(
-      child: ListView(
-        padding: const EdgeInsets.only(top: 0.0),
-        children: [
-          const SizedBox(
-            height: 50.0,
+    return Container(
+      decoration: BoxDecoration(
+            gradient: LinearGradient(
+              colors: [
+                Color.fromARGB(255, 134, 255, 86),
+                Color.fromARGB(255, 136, 255, 57),
+                Color.fromARGB(255, 9, 255, 0),
+                Color.fromARGB(255, 1, 13, 255),
+              ],
+              transform: GradientRotation(pi/2),
+            )
           ),
-          Row(
-            mainAxisAlignment: MainAxisAlignment.start,
-            children: const [
-              Cardout(), //counter.dart
-              SizedBox(
-                width: 60.0,
-              ),
-              Stats(value: "0") //stats class defined below
-            ],
-          ),
-          const Center(
-              child: Text(
-            "Your Plants",
-            style: TextStyle(fontSize: 20.0, fontWeight: FontWeight.w600),
-          )),
-          const SizedBox(
-            height: 50.0,
-          ),
-          Row(
-            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-            children: const [
-              Text(
-                "Coins",
-                style: TextStyle(fontSize: 20.0, fontWeight: FontWeight.w600),
-              ), // friends logo, Ilogo class defined below
-              SizedBox(
-                width: 40.0,
-              ),
-              Text(
-                "Verifications",
-                style: TextStyle(fontSize: 20.0, fontWeight: FontWeight.w600),
-              ),
-            ],
-          ),
-          const SizedBox(
-            height: 10.0,
-          ),
-          Row(
-            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-            children: const [
-              Text(
-                "1",
-                style: TextStyle(fontSize: 20.0, fontWeight: FontWeight.w600),
-              ),
-              SizedBox(
-                width: 40.0,
-              ),
-              Text(
-                "100",
-                style: TextStyle(fontSize: 20.0, fontWeight: FontWeight.w600),
-              ),
-            ],
-          ),
-          const SizedBox(
-            height: 60.0,
-          ),
-          const Controls(
-            child: Bottomcolumn(),
-          ),
-        ],
+      child: SafeArea(
+        child: ListView(
+          padding: const EdgeInsets.only(top: 0.0),
+          children: [
+            const SizedBox(
+              height: 50.0,
+            ),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.start,
+              children: const [
+                Cardout(), //counter.dart
+                SizedBox(
+                  width: 60.0,
+                ),
+                Stats(value: "0") //stats class defined below
+              ],
+            ),
+            const Center(
+                child: Text(
+              "Your Plants",
+              style: TextStyle(fontSize: 20.0, fontWeight: FontWeight.w600),
+            )),
+            const SizedBox(
+              height: 50.0,
+            ),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+              children: const [
+                Text(
+                  "Coins",
+                  style: TextStyle(fontSize: 20.0, fontWeight: FontWeight.w600),
+                ), // friends logo, Ilogo class defined below
+                SizedBox(
+                  width: 40.0,
+                ),
+                Text(
+                  "Verifications",
+                  style: TextStyle(fontSize: 20.0, fontWeight: FontWeight.w600),
+                ),
+              ],
+            ),
+            const SizedBox(
+              height: 10.0,
+            ),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+              children: const [
+                Text(
+                  "1",
+                  style: TextStyle(fontSize: 20.0, fontWeight: FontWeight.w600),
+                ),
+                SizedBox(
+                  width: 40.0,
+                ),
+                Text(
+                  "100",
+                  style: TextStyle(fontSize: 20.0, fontWeight: FontWeight.w600),
+                ),
+              ],
+            ),
+            const SizedBox(
+              height: 60.0,
+            ),
+            const Controls(
+              child: Bottomcolumn(),
+            ),
+          ],
+        ),
       ),
     );
   }
