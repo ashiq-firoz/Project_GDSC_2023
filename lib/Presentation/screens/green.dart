@@ -9,10 +9,14 @@ import 'package:project_17/Presentation/screens/weather.dart';
 import 'package:project_17/Presentation/screens/yellow.dart';
 import 'package:project_17/Presentation/widgets/bottomContainer.dart';
 import 'package:tflite/tflite.dart';
+import '../../DB/models/dynamic.dart';
 import '../Icons/icons.dart';
 
-var totalCoins = 0.00;
 var validations = 0;
+var totalCoins = 0.00;
+
+ValueNotifier<Countdata> count =
+    ValueNotifier(Countdata(coinCount: 0.00, validation: 0));
 
 class GreenScreen extends StatelessWidget {
   const GreenScreen({super.key});
@@ -49,82 +53,91 @@ class Green1 extends StatelessWidget {
       decoration: BoxDecoration(
           gradient: LinearGradient(
         colors: [
-          Color.fromARGB(255, 134, 255, 86),
-          Color.fromARGB(255, 136, 255, 57),
-          Color.fromARGB(255, 9, 255, 0),
-          Color.fromARGB(255, 1, 13, 255),
+          Color.fromARGB(100, 42, 121, 10),
+          Color.fromARGB(100, 16, 121, 56),
+          Color.fromARGB(100, 79, 126, 10),
+          Color.fromARGB(100, 11, 167, 150),
         ],
         transform: GradientRotation(pi / 2),
       )),
       child: SafeArea(
-        child: ListView(
-          padding: const EdgeInsets.only(top: 0.0),
-          children: [
-            const SizedBox(
-              height: 50.0,
-            ),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.start,
-              children: const [
-                Cardout(), //counter.dart
-                SizedBox(
-                  width: 60.0,
-                ),
-                Stats(value: "0") //stats class defined below
-              ],
-            ),
-            const Center(
-                child: Text(
-              "Your Plants",
-              style: TextStyle(fontSize: 20.0, fontWeight: FontWeight.w600),
-            )),
-            const SizedBox(
-              height: 50.0,
-            ),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-              children: const [
-                Text(
-                  "Coins",
-                  style: TextStyle(fontSize: 20.0, fontWeight: FontWeight.w600),
-                ), // friends logo, Ilogo class defined below
-                SizedBox(
-                  width: 40.0,
-                ),
-                Text(
-                  "Verifications",
-                  style: TextStyle(fontSize: 20.0, fontWeight: FontWeight.w600),
-                ),
-              ],
-            ),
-            const SizedBox(
-              height: 10.0,
-            ),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+        child: ValueListenableBuilder(
+          valueListenable: count,
+          builder: (BuildContext ctx, Countdata c, Widget? child) {
+            totalCoins = c.coinCount;
+            validations = c.validation;
+            return ListView(
+              padding: const EdgeInsets.only(top: 0.0),
               children: [
-                Text(
-                  "$totalCoins",
-                  style: const TextStyle(
-                      fontSize: 20.0, fontWeight: FontWeight.w600),
+                const SizedBox(
+                  height: 50.0,
+                ),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.start,
+                  children: const [
+                    Cardout(), //counter.dart
+                    SizedBox(
+                      width: 60.0,
+                    ),
+                    Stats(value: "0") //stats class defined below
+                  ],
+                ),
+                const Center(
+                    child: Text(
+                  "Your Plants",
+                  style: TextStyle(fontSize: 20.0, fontWeight: FontWeight.w600),
+                )),
+                const SizedBox(
+                  height: 50.0,
+                ),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                  children: const [
+                    Text(
+                      "Coins",
+                      style: TextStyle(
+                          fontSize: 20.0, fontWeight: FontWeight.w600),
+                    ), // friends logo, Ilogo class defined below
+                    SizedBox(
+                      width: 40.0,
+                    ),
+                    Text(
+                      "Verifications",
+                      style: TextStyle(
+                          fontSize: 20.0, fontWeight: FontWeight.w600),
+                    ),
+                  ],
                 ),
                 const SizedBox(
-                  width: 40.0,
+                  height: 10.0,
                 ),
-                Text(
-                  "$validations",
-                  style: const TextStyle(
-                      fontSize: 20.0, fontWeight: FontWeight.w600),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                  children: [
+                    Text(
+                      "$totalCoins",
+                      style: const TextStyle(
+                          fontSize: 20.0, fontWeight: FontWeight.w600),
+                    ),
+                    const SizedBox(
+                      width: 40.0,
+                    ),
+                    Text(
+                      "$validations",
+                      style: const TextStyle(
+                          fontSize: 20.0, fontWeight: FontWeight.w600),
+                    ),
+                  ],
+                ),
+                const SizedBox(
+                  height: 60.0,
+                ),
+                const Controls(
+                  child: Bottomcolumn(),
                 ),
               ],
-            ),
-            const SizedBox(
-              height: 60.0,
-            ),
-            const Controls(
-              child: Bottomcolumn(),
-            ),
-          ],
+            );
+          },
         ),
       ),
     );
@@ -206,14 +219,18 @@ class _BottomcolumnState extends State<Bottomcolumn> {
       threshold: 0.1,
       asynch: true,
     );
+
     predict!.forEach((element) {
       out = element["label"];
       if (out == "0 plant" || out == "1 tree") {
         setState(() {
           totalCoins = totalCoins + 0.001;
           validations = validations + 1;
-          Navigator.push(context,
-              MaterialPageRoute(builder: (context) => const GreenScreen()));
+          count.value.coinCount = totalCoins;
+          count.value.validation = validations;
+          count.notifyListeners();
+          // Navigator.push(context,
+          //     MaterialPageRoute(builder: (context) => const GreenScreen()));
         });
       }
     });

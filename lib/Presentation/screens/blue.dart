@@ -11,9 +11,13 @@ import 'package:project_17/Presentation/screens/yellow.dart';
 import 'package:project_17/Presentation/widgets/bottomContainer.dart';
 import 'package:project_17/Presentation/widgets/counter.dart';
 import 'package:tflite/tflite.dart';
+import '../../DB/models/dynamic.dart';
 
-var coinCount = 0.000;
 var trashCount = 0;
+var coinCount = 0.00;
+
+ValueNotifier<Countdata> Count =
+    ValueNotifier(Countdata(coinCount: 0.00, validation: 0));
 
 class BlueScreen extends StatelessWidget {
   const BlueScreen({super.key});
@@ -50,10 +54,10 @@ class Blue1 extends StatelessWidget {
       decoration: BoxDecoration(
           gradient: LinearGradient(
         colors: [
-          Color.fromARGB(255, 0, 247, 255),
-          Color.fromARGB(255, 0, 174, 255),
-          Color.fromARGB(255, 55, 85, 255),
-          Color.fromARGB(255, 1, 13, 255),
+          Color.fromARGB(100, 11, 141, 161),
+          Color.fromARGB(100, 10, 11, 121),
+          Color.fromARGB(100, 9, 9, 121),
+          Color.fromARGB(100, 2, 0, 36),
         ],
         transform: GradientRotation(pi / 2),
       )),
@@ -181,16 +185,23 @@ class Stats extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Column(
-      mainAxisAlignment: MainAxisAlignment.start,
-      children: [
-        Row(
-          children: [Ilogo(icon: icon1), Text("$coinCount")],
-        ),
-        Row(
-          children: [Ilogo(icon: icon2), Text("$trashCount")],
-        ),
-      ],
+    return ValueListenableBuilder(
+      valueListenable: Count,
+      builder: (BuildContext ctx, Countdata val, Widget? child) {
+        coinCount = val.coinCount;
+        trashCount = val.validation;
+        return Column(
+          mainAxisAlignment: MainAxisAlignment.start,
+          children: [
+            Row(
+              children: [Ilogo(icon: icon1), Text("$coinCount")],
+            ),
+            Row(
+              children: [Ilogo(icon: icon2), Text("$trashCount")],
+            ),
+          ],
+        );
+      },
     );
   }
 }
@@ -255,6 +266,7 @@ class _CameraIconState extends State<CameraIcon> {
       threshold: 0.1,
       asynch: true,
     );
+    await Tflite.close();
     //print("prediction ");
     perdict!.forEach((element) {
       setState(() {
@@ -264,11 +276,12 @@ class _CameraIconState extends State<CameraIcon> {
           //print("trash");
           coinCount = coinCount + 0.001;
           trashCount = trashCount + 1;
+          Count.value.coinCount = coinCount;
+          Count.value.validation = trashCount;
+          Count.notifyListeners();
         }
         //print(out);
       });
-      Navigator.push(
-          context, MaterialPageRoute(builder: (context) => const BlueScreen()));
     });
   }
 
