@@ -1,10 +1,18 @@
+import 'dart:math';
+import 'dart:io';
+
 import 'package:flutter/material.dart';
+import 'package:image_picker/image_picker.dart';
 import 'package:project_17/Presentation/Colors/colors.dart';
 import 'package:project_17/Presentation/screens/blue.dart';
 import 'package:project_17/Presentation/screens/weather.dart';
 import 'package:project_17/Presentation/screens/yellow.dart';
 import 'package:project_17/Presentation/widgets/bottomContainer.dart';
+import 'package:tflite/tflite.dart';
 import '../Icons/icons.dart';
+
+var totalCoins = 0.00;
+var validations = 0;
 
 class GreenScreen extends StatelessWidget {
   const GreenScreen({super.key});
@@ -37,73 +45,87 @@ class Green1 extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return SafeArea(
-      child: ListView(
-        padding: const EdgeInsets.only(top: 0.0),
-        children: [
-          const SizedBox(
-            height: 50.0,
-          ),
-          Row(
-            mainAxisAlignment: MainAxisAlignment.start,
-            children: const [
-              Cardout(), //counter.dart
-              SizedBox(
-                width: 60.0,
-              ),
-              Stats(value: "0") //stats class defined below
-            ],
-          ),
-          const Center(
-              child: Text(
-            "Your Plants",
-            style: TextStyle(fontSize: 20.0, fontWeight: FontWeight.w600),
-          )),
-          const SizedBox(
-            height: 50.0,
-          ),
-          Row(
-            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-            children: const [
-              Text(
-                "Coins",
-                style: TextStyle(fontSize: 20.0, fontWeight: FontWeight.w600),
-              ), // friends logo, Ilogo class defined below
-              SizedBox(
-                width: 40.0,
-              ),
-              Text(
-                "Verifications",
-                style: TextStyle(fontSize: 20.0, fontWeight: FontWeight.w600),
-              ),
-            ],
-          ),
-          const SizedBox(
-            height: 10.0,
-          ),
-          Row(
-            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-            children: const [
-              Text(
-                "1",
-                style: TextStyle(fontSize: 20.0, fontWeight: FontWeight.w600),
-              ),
-              SizedBox(
-                width: 40.0,
-              ),
-              Text(
-                "100",
-                style: TextStyle(fontSize: 20.0, fontWeight: FontWeight.w600),
-              ),
-            ],
-          ),
-          const SizedBox(
-            height: 60.0,
-          ),
-          const Controls(
-            child: Bottomcolumn(),
-          ),
+    return Container(
+      decoration: BoxDecoration(
+          gradient: LinearGradient(
+        colors: [
+          Color.fromARGB(255, 134, 255, 86),
+          Color.fromARGB(255, 136, 255, 57),
+          Color.fromARGB(255, 9, 255, 0),
+          Color.fromARGB(255, 1, 13, 255),
         ],
+        transform: GradientRotation(pi / 2),
+      )),
+      child: SafeArea(
+        child: ListView(
+          padding: const EdgeInsets.only(top: 0.0),
+          children: [
+            const SizedBox(
+              height: 50.0,
+            ),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.start,
+              children: const [
+                Cardout(), //counter.dart
+                SizedBox(
+                  width: 60.0,
+                ),
+                Stats(value: "0") //stats class defined below
+              ],
+            ),
+            const Center(
+                child: Text(
+              "Your Plants",
+              style: TextStyle(fontSize: 20.0, fontWeight: FontWeight.w600),
+            )),
+            const SizedBox(
+              height: 50.0,
+            ),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+              children: const [
+                Text(
+                  "Coins",
+                  style: TextStyle(fontSize: 20.0, fontWeight: FontWeight.w600),
+                ), // friends logo, Ilogo class defined below
+                SizedBox(
+                  width: 40.0,
+                ),
+                Text(
+                  "Verifications",
+                  style: TextStyle(fontSize: 20.0, fontWeight: FontWeight.w600),
+                ),
+              ],
+            ),
+            const SizedBox(
+              height: 10.0,
+            ),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+              children: [
+                Text(
+                  "$totalCoins",
+                  style: const TextStyle(
+                      fontSize: 20.0, fontWeight: FontWeight.w600),
+                ),
+                const SizedBox(
+                  width: 40.0,
+                ),
+                Text(
+                  "$validations",
+                  style: const TextStyle(
+                      fontSize: 20.0, fontWeight: FontWeight.w600),
+                ),
+              ],
+            ),
+            const SizedBox(
+              height: 60.0,
+            ),
+            const Controls(
+              child: Bottomcolumn(),
+            ),
+          ],
+        ),
       ),
     );
   }
@@ -154,8 +176,48 @@ class Bottombar extends StatelessWidget {
   }
 }
 
-class Bottomcolumn extends StatelessWidget {
+class Bottomcolumn extends StatefulWidget {
   const Bottomcolumn({super.key});
+
+  @override
+  State<Bottomcolumn> createState() => _BottomcolumnState();
+}
+
+class _BottomcolumnState extends State<Bottomcolumn> {
+  late File _img;
+  String out = "";
+  getimage() async {
+    final img = await ImagePicker().pickImage(source: ImageSource.gallery);
+
+    setState(() {
+      _img = File(img!.path);
+    });
+    runModel();
+  }
+
+  runModel() async {
+    await Tflite.loadModel(
+        model: "assets/model2.tflite", labels: "assets/labels2.txt");
+    var predict = await Tflite.runModelOnImage(
+      path: _img.path,
+      imageMean: 0.0,
+      imageStd: 255.0,
+      numResults: 2,
+      threshold: 0.1,
+      asynch: true,
+    );
+    predict!.forEach((element) {
+      out = element["label"];
+      if (out == "0 plant" || out == "1 tree") {
+        setState(() {
+          totalCoins = totalCoins + 0.001;
+          validations = validations + 1;
+          Navigator.push(context,
+              MaterialPageRoute(builder: (context) => const GreenScreen()));
+        });
+      }
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -164,7 +226,14 @@ class Bottomcolumn extends StatelessWidget {
         const SizedBox(
           height: 30.0,
         ),
-        const Ilogo(icon: Icons.add_a_photo_outlined, size: 60.0),
+
+        GestureDetector(
+          onTap: () {
+            getimage();
+          },
+          child: const Ilogo(icon: Icons.add_a_photo_outlined, size: 60.0),
+        ),
+
         const Center(
             child: Text(
           "Add a plant", //"Verify your plants"

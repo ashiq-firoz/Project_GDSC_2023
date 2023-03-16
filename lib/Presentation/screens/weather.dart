@@ -1,3 +1,5 @@
+import 'dart:math';
+
 import 'package:flutter/material.dart';
 import 'package:project_17/Presentation/Colors/colors.dart';
 import 'package:project_17/Presentation/screens/blue.dart';
@@ -25,7 +27,7 @@ class WeatherScreen extends StatelessWidget {
         ),
         title: Text("Level1"),
       ),
-      body: const Blue1(),
+      body: const Weather1(),
       bottomNavigationBar: const BottomAppBar(
         color: colorbottomcont,
         child: Bottombar(),
@@ -34,51 +36,64 @@ class WeatherScreen extends StatelessWidget {
   }
 }
 
-class Blue1 extends StatelessWidget {
-  const Blue1({super.key});
+class Weather1 extends StatelessWidget {
+  const Weather1({super.key});
 
   @override
   Widget build(BuildContext context) {
-    return SafeArea(
-      child: ListView(
-        children: [
-          const SizedBox(
-            height: 50.0,
+    return Container(
+        decoration: BoxDecoration(
+            gradient: LinearGradient(
+              colors: [
+                Color.fromARGB(255, 148, 148, 148),
+                Color.fromARGB(255, 93, 93, 93),
+                Color.fromARGB(255, 41, 41, 41),
+                Color.fromARGB(255, 66, 66, 66),
+              ],
+              transform: GradientRotation(pi/2),
+            )
           ),
-          Row(
-            mainAxisAlignment: MainAxisAlignment.start,
-            children: const [
-              Counter(), //counter.dart
-              SizedBox(
-                width: 60.0,
-              ),
-              Stats(
-                  icon1: Icons.currency_rupee,
-                  icon2: Icons.recycling) //stats class defined below
-            ],
-          ),
-          const SizedBox(
-            height: 50.0,
-          ),
-          Row(
-            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-            children: const [
-              Ilogo(
-                  icon: Icons
-                      .new_releases), // friends logo, Ilogo class defined below
-              SizedBox(
-                width: 40.0,
-              ),
-              Ilogo(icon: Icons.map_outlined),
-            ],
-          ),
-          const SizedBox(
-            height: 110,
-          ),
-          const Controls(
-            child: Bottomcolumn(),
-          ),
-        ],
+      child: SafeArea(
+        child: ListView(
+          children: [
+            const SizedBox(
+              height: 50.0,
+            ),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.start,
+              children: const [
+                Counter(), //counter.dart
+                SizedBox(
+                  width: 60.0,
+                ),
+                Stats(
+                    icon1: Icons.currency_rupee,
+                    icon2: Icons.recycling) //stats class defined below
+              ],
+            ),
+            const SizedBox(
+              height: 50.0,
+            ),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+              children: const [
+                Ilogo(
+                    icon: Icons
+                        .new_releases), // friends logo, Ilogo class defined below
+                SizedBox(
+                  width: 40.0,
+                ),
+                Ilogo(icon: Icons.map_outlined),
+              ],
+            ),
+            const SizedBox(
+              height: 110,
+            ),
+            const Controls(
+              child: Bottomcolumn(),
+            ),
+          ],
+        ),
       ),
     );
   }
@@ -107,21 +122,21 @@ class Bottombar extends StatelessWidget {
         IconButton(
           onPressed: () {
             Navigator.push(context,
-                MaterialPageRoute(builder: (context) => const YellowScreen()));
+                MaterialPageRoute(builder: (context) => const GreenScreen()));
           },
           icon: const Logo(
-            icon: yellowLogo,
-            bgcolor: colouryellow,
+            icon: greenLogo,
+            bgcolor: colourgreen,
           ),
         ),
         IconButton(
           onPressed: () {
             Navigator.push(context,
-                MaterialPageRoute(builder: (context) => const GreenScreen()));
+                MaterialPageRoute(builder: (context) => const YellowScreen()));
           },
           icon: const Logo(
-            icon: weatherLogo,
-            bgcolor: colourweather,
+            icon: yellowLogo,
+            bgcolor: colouryellow,
           ),
         ),
       ],
