@@ -1,14 +1,23 @@
 import 'dart:math';
+import 'dart:io';
 
 import 'package:flutter/material.dart';
+import 'package:image_picker/image_picker.dart';
 import 'package:project_17/Presentation/Colors/colors.dart';
 import 'package:project_17/Presentation/Icons/icons.dart';
 import 'package:project_17/Presentation/screens/green.dart';
 import 'package:project_17/Presentation/screens/weather.dart';
 import 'package:project_17/Presentation/screens/yellow.dart';
 import 'package:project_17/Presentation/widgets/bottomContainer.dart';
-import 'package:project_17/Presentation/widgets/cameraicon.dart';
 import 'package:project_17/Presentation/widgets/counter.dart';
+import 'package:tflite/tflite.dart';
+import '../../DB/models/dynamic.dart';
+
+var trashCount = 0;
+var coinCount = 0.00;
+
+ValueNotifier<Countdata> Count =
+    ValueNotifier(Countdata(coinCount: 0.00, validation: 0));
 
 class BlueScreen extends StatelessWidget {
   const BlueScreen({super.key});
@@ -42,17 +51,16 @@ class Blue1 extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-          decoration: BoxDecoration(
-            gradient: LinearGradient(
-              colors: [
-                Color.fromARGB(255, 0, 247, 255),
-                Color.fromARGB(255, 0, 174, 255),
-                Color.fromARGB(255, 55, 85, 255),
-                Color.fromARGB(255, 1, 13, 255),
-              ],
-              transform: GradientRotation(pi/2),
-            )
-          ),
+      decoration: BoxDecoration(
+          gradient: LinearGradient(
+        colors: [
+          Color.fromARGB(100, 11, 141, 161),
+          Color.fromARGB(100, 10, 11, 121),
+          Color.fromARGB(100, 9, 9, 121),
+          Color.fromARGB(100, 2, 0, 36),
+        ],
+        transform: GradientRotation(pi / 2),
+      )),
       child: SafeArea(
         child: ListView(
           children: [
@@ -177,16 +185,23 @@ class Stats extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Column(
-      mainAxisAlignment: MainAxisAlignment.start,
-      children: [
-        Row(
-          children: [Ilogo(icon: icon1), Text("1")],
-        ),
-        Row(
-          children: [Ilogo(icon: icon2), Text("100")],
-        ),
-      ],
+    return ValueListenableBuilder(
+      valueListenable: Count,
+      builder: (BuildContext ctx, Countdata val, Widget? child) {
+        coinCount = val.coinCount;
+        trashCount = val.validation;
+        return Column(
+          mainAxisAlignment: MainAxisAlignment.start,
+          children: [
+            Row(
+              children: [Ilogo(icon: icon1), Text("$coinCount")],
+            ),
+            Row(
+              children: [Ilogo(icon: icon2), Text("$trashCount")],
+            ),
+          ],
+        );
+      },
     );
   }
 }
@@ -208,6 +223,86 @@ class Ilogo extends StatelessWidget {
           child: Icon(icon),
         ),
       ),
+    );
+  }
+}
+
+class CameraIcon extends StatefulWidget {
+  const CameraIcon({super.key});
+
+  @override
+  State<CameraIcon> createState() => _CameraIconState();
+}
+
+class _CameraIconState extends State<CameraIcon> {
+  final width = 150.0;
+
+  final height = 150.0;
+
+  //use double ,ie: decimal values
+  final iconsize = 100.0;
+
+  String out = "";
+  File? _img;
+
+  loadimage() async {
+    final image = await ImagePicker().pickImage(source: ImageSource.gallery);
+    //print(image?.path);
+    setState(() {
+      _img = File(image!.path);
+      //print(_img!.path);
+      runModel();
+    });
+  }
+
+  runModel() async {
+    await Tflite.loadModel(
+        model: "assets/model.tflite", labels: "assets/labels.txt");
+    var perdict = await Tflite.runModelOnImage(
+      path: _img!.path,
+      imageMean: 0.0,
+      imageStd: 255.0,
+      numResults: 2,
+      threshold: 0.1,
+      asynch: true,
+    );
+    await Tflite.close();
+    //print("prediction ");
+    perdict!.forEach((element) {
+      setState(() {
+        out = element["label"];
+        //print(out);
+        if (out == "0 trash") {
+          //print("trash");
+          coinCount = coinCount + 0.001;
+          trashCount = trashCount + 1;
+          Count.value.coinCount = coinCount;
+          Count.value.validation = trashCount;
+          Count.notifyListeners();
+        }
+        //print(out);
+      });
+    });
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      width: width,
+      height: height,
+      decoration: const BoxDecoration(
+        color: coloriconbtmbg,
+        shape: BoxShape.circle,
+      ),
+      child: IconButton(
+          onPressed: () {
+            loadimage();
+          },
+          icon: const Icon(
+            camIcon,
+            color: colouricon,
+            size: 100.0,
+          )),
     );
   }
 }

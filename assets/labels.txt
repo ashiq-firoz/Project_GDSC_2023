@@ -1,0 +1,2 @@
+0 trash
+1 not trash
