@@ -1,11 +1,10 @@
 import 'package:flutter/material.dart';
-
-const camIcon = Icons.camera_alt_rounded;
+const camIcon = Icons.add_a_photo_outlined;
 
 const blueLogo = Icons.water_drop;
-const greenLogo = Icons.forest_rounded;
-const yellowLogo = Icons.charging_station_outlined;
-const weatherLogo = Icons.cloud;
+const greenLogo = Icons.yard_outlined;
+const yellowLogo = Icons.energy_savings_leaf_outlined;
+const weatherLogo = Icons.nights_stay_outlined;
 
 //widgets
 
@@ -44,7 +43,7 @@ class YourtreeIcon extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Icon(
-      Icons.forest_rounded,
+      Icons.nature_people,
       color: Colors.black,
       size: 120.0,
     );

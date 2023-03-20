@@ -120,7 +120,7 @@ packages:
       sha256: "16e46b32915fcbc53afc1f96ca868cd91495608935a20bd16f47b854bfed9b17"
       url: "https://pub.dev"
     source: hosted
-    version: "0.10.4+3"
+    version: "0.10.5"
   camera_avfoundation:
     dependency: transitive
     description:
@@ -439,7 +439,7 @@ packages:
       sha256: "420ed22d2c9ce767ed96df723aaebfeb20ce92dfda8665cd2ba72d72a51ae669"
       url: "https://pub.dev"
     source: hosted
-    version: "0.8.6+1"
+    version: "0.8.6+5"
   image_picker_for_web:
     dependency: transitive
     description:

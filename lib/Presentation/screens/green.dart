@@ -4,6 +4,8 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:project_17/DB/functions/db_functions.dart';
+import 'package:project_17/DB/models/dbmodels.dart';
 import 'package:project_17/Presentation/Colors/colors.dart';
 import 'package:project_17/Presentation/screens/blue.dart';
 import 'package:project_17/Presentation/screens/weather.dart';
@@ -15,9 +17,7 @@ import '../Icons/icons.dart';
 
 var validations = 0;
 var totalCoins = 0.00;
-
-ValueNotifier<Countdata> count =
-    ValueNotifier(Countdata(coinCount: 0.00, validation: 0));
+var totalplants = 0;
 
 class GreenScreen extends StatelessWidget {
   const GreenScreen({super.key});
@@ -63,10 +63,12 @@ class Green1 extends StatelessWidget {
       )),
       child: SafeArea(
         child: ValueListenableBuilder(
-          valueListenable: count,
-          builder: (BuildContext ctx, Countdata c, Widget? child) {
-            totalCoins = c.coinCount;
-            validations = c.validation;
+          valueListenable: data,
+          builder: (BuildContext ctx, GreenData c, Widget? child) {
+            getGreenData();
+            totalCoins = c.coins;
+            validations = c.verifications;
+            totalplants = c.totalplants;
             return ListView(
               padding: const EdgeInsets.only(top: 0.0),
               children: [
@@ -75,12 +77,12 @@ class Green1 extends StatelessWidget {
                 ),
                 Row(
                   mainAxisAlignment: MainAxisAlignment.start,
-                  children: const [
-                    Cardout(), //counter.dart
-                    SizedBox(
+                  children: [
+                    const Cardout(), //counter.dart
+                    const SizedBox(
                       width: 60.0,
                     ),
-                    Stats(value: "0") //stats class defined below
+                    Stats(value: "$totalplants") //stats class defined below
                   ],
                 ),
                 const Center(
@@ -227,11 +229,11 @@ class _BottomcolumnState extends State<Bottomcolumn> {
         setState(() {
           totalCoins = totalCoins + 0.001;
           validations = validations + 1;
-          count.value.coinCount = totalCoins;
-          count.value.validation = validations;
-          count.notifyListeners();
-          // Navigator.push(context,
-          //     MaterialPageRoute(builder: (context) => const GreenScreen()));
+          data.value.coins = totalCoins;
+          data.value.totalplants = 1;
+          data.value.verifications = validations;
+          updateGreenData(data.value);
+          data.notifyListeners();
         });
       }
     });

@@ -3,6 +3,8 @@ import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:project_17/DB/functions/db_functions.dart';
+import 'package:project_17/DB/models/bluemodel.dart';
 import 'package:project_17/Presentation/Colors/colors.dart';
 import 'package:project_17/Presentation/Icons/icons.dart';
 import 'package:project_17/Presentation/screens/green.dart';
@@ -34,7 +36,12 @@ class BlueScreen extends StatelessWidget {
           blueLogo,
           color: Colors.white,
         ),
-        title: Text("Level1"),
+        title: ValueListenableBuilder(
+          valueListenable: bluedata,
+          builder: (BuildContext ctx1, BlueData data, Widget? child) {
+            return Text(data.level);
+          },
+        ),
       ),
       body: const Blue1(),
       bottomNavigationBar: const BottomAppBar(
@@ -186,10 +193,10 @@ class Stats extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return ValueListenableBuilder(
-      valueListenable: Count,
-      builder: (BuildContext ctx, Countdata val, Widget? child) {
-        coinCount = val.coinCount;
-        trashCount = val.validation;
+      valueListenable: bluedata,
+      builder: (BuildContext ctx, BlueData val, Widget? child) {
+        coinCount = val.coins;
+        trashCount = val.trash;
         return Column(
           mainAxisAlignment: MainAxisAlignment.start,
           children: [
@@ -276,9 +283,11 @@ class _CameraIconState extends State<CameraIcon> {
           //print("trash");
           coinCount = coinCount + 0.001;
           trashCount = trashCount + 1;
-          Count.value.coinCount = coinCount;
-          Count.value.validation = trashCount;
-          Count.notifyListeners();
+
+          bluedata.value.coins = totalCoins;
+          bluedata.value.trash = trashCount;
+          updateBlueData(bluedata.value);
+          bluedata.notifyListeners();
         }
         //print(out);
       });
