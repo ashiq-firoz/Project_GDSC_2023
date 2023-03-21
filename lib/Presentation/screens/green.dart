@@ -11,6 +11,7 @@ import 'package:project_17/Presentation/screens/blue.dart';
 import 'package:project_17/Presentation/screens/weather.dart';
 import 'package:project_17/Presentation/screens/yellow.dart';
 import 'package:project_17/Presentation/widgets/bottomContainer.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:tflite/tflite.dart';
 import '../../DB/models/plantmodel.dart';
 import '../Icons/icons.dart';
@@ -20,6 +21,8 @@ var totalCoins = 0.00;
 var totalplants = 0;
 
 Plant p = Plant(coins: 0.00, location: "", name: "p1", verification: 0);
+
+TextEditingController controller = TextEditingController();
 
 class GreenScreen extends StatelessWidget {
   const GreenScreen({super.key});
@@ -92,7 +95,10 @@ class Green1 extends StatelessWidget {
                 const Center(
                     child: Text(
                   "Your Plants",
-                  style: TextStyle(fontFamily:'MontserratAlternates',fontSize: 20.0, fontWeight: FontWeight.w500),
+                  style: TextStyle(
+                      fontFamily: 'MontserratAlternates',
+                      fontSize: 20.0,
+                      fontWeight: FontWeight.w500),
                 )),
                 const SizedBox(
                   height: 50.0,
@@ -102,16 +108,20 @@ class Green1 extends StatelessWidget {
                   children: const [
                     Text(
                       "Coins",
-                      style: TextStyle(fontFamily:'MontserratAlternates',
-                          fontSize: 20.0, fontWeight: FontWeight.w600),
+                      style: TextStyle(
+                          fontFamily: 'MontserratAlternates',
+                          fontSize: 20.0,
+                          fontWeight: FontWeight.w600),
                     ), // friends logo, Ilogo class defined below
                     SizedBox(
                       width: 40.0,
                     ),
                     Text(
                       "Verifications",
-                      style: TextStyle(fontFamily:'MontserratAlternates',
-                          fontSize: 20.0, fontWeight: FontWeight.w600),
+                      style: TextStyle(
+                          fontFamily: 'MontserratAlternates',
+                          fontSize: 20.0,
+                          fontWeight: FontWeight.w600),
                     ),
                   ],
                 ),
@@ -119,13 +129,11 @@ class Green1 extends StatelessWidget {
                   height: 10.0,
                 ),
                 Row(
-                  
                   mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                   children: [
                     Text(
                       "$totalCoins",
                       style: const TextStyle(
-                          
                           fontSize: 20.0, fontWeight: FontWeight.w600),
                     ),
                     const SizedBox(
@@ -228,12 +236,13 @@ class _BottomcolumnState extends State<Bottomcolumn> {
       threshold: 0.1,
       asynch: true,
     );
-
+    SharedPreferences detected = await SharedPreferences.getInstance();
     predict!.forEach((element) {
       out = element["label"];
       if (out == "0 tree") {
         setState(() {
           totalCoins = totalCoins + 0.001;
+          totalCoins = double.parse(totalCoins.toStringAsFixed(3));
           validations = validations + 1;
           data.value.coins = totalCoins;
           data.value.totalplants = 1;
@@ -245,11 +254,15 @@ class _BottomcolumnState extends State<Bottomcolumn> {
           addplant(p);
           plantdata.notifyListeners();
         });
+        detected.setBool("greenfound", true);
+      } else {
+        detected.setBool("greenfound", false);
       }
     });
   }
+
   // start google maps section
-   late GoogleMapController mapController;
+  late GoogleMapController mapController;
 
   final LatLng _center = const LatLng(9.754586, 76.649583);
   final List<Marker> marker = const [
@@ -277,7 +290,7 @@ class _BottomcolumnState extends State<Bottomcolumn> {
         infoWindow: InfoWindow(
           title: "Alappuzha",
         )),
-        Marker(
+    Marker(
         markerId: MarkerId("KTYM"),
         position: LatLng(9.754586, 76.649583),
         infoWindow: InfoWindow(
@@ -285,12 +298,33 @@ class _BottomcolumnState extends State<Bottomcolumn> {
         ))
   ];
 
-  void _onMapCreated(GoogleMapController controller){
-    mapController= controller;
+  void _onMapCreated(GoogleMapController controller) {
+    mapController = controller;
   }
+
 //end google maps section
   @override
   Widget build(BuildContext context) {
+    void showSnackBar(BuildContext context) async {
+      SharedPreferences detect = await SharedPreferences.getInstance();
+      String message = "";
+      var color;
+      if (detect.getBool("greenfound")!) {
+        color = successcolor;
+        message = "Verified";
+      } else {
+        color = errcolor;
+        message = "Not Verified";
+      }
+      final snackBar = SnackBar(
+        content: Text(message),
+        backgroundColor: color,
+        behavior: SnackBarBehavior.floating,
+        elevation: 30,
+      );
+      ScaffoldMessenger.of(context).showSnackBar(snackBar);
+    }
+
     return Column(
       children: [
         const SizedBox(
@@ -298,8 +332,9 @@ class _BottomcolumnState extends State<Bottomcolumn> {
         ),
 
         GestureDetector(
-          onTap: () {
-            getimage();
+          onTap: () async {
+            await getimage();
+            showSnackBar(context);
           },
           child: const Ilogo(icon: Icons.add_a_photo_outlined, size: 60.0),
         ),
@@ -307,7 +342,11 @@ class _BottomcolumnState extends State<Bottomcolumn> {
         const Center(
             child: Text(
           "Add a plant", //"Verify your plants"
-          style: TextStyle(fontFamily: 'MontserratAlternates',fontWeight:FontWeight.w500,fontSize: 30.0, color: colourtext),
+          style: TextStyle(
+              fontFamily: 'MontserratAlternates',
+              fontWeight: FontWeight.w500,
+              fontSize: 30.0,
+              color: colourtext),
         )),
         const Center(
             child: Text(
@@ -323,19 +362,15 @@ class _BottomcolumnState extends State<Bottomcolumn> {
         SizedBox(
           height: 600,
           child: GoogleMap(
-              onMapCreated: _onMapCreated,
-              initialCameraPosition: CameraPosition(
-                target: _center,
-                zoom: 6.0,
-                
-                ),
-                markers: Set.of(marker),
-              ),
-        ) ,
+            onMapCreated: _onMapCreated,
+            initialCameraPosition: CameraPosition(
+              target: _center,
+              zoom: 6.0,
+            ),
+            markers: Set.of(marker),
+          ),
+        ),
 
-
-
-      
         SizedBox(
           height: 300,
           child: ListView(
@@ -554,6 +589,30 @@ class MerchCard extends StatelessWidget {
           ),
           child: Image(image: AssetImage("assets/images/ad.jpeg")),
         ),
+      ),
+    );
+  }
+}
+
+class Name extends StatelessWidget {
+  const Name({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return Center(
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.spaceAround,
+        children: [
+          const Text(
+            "Plant name : ",
+            style: TextStyle(color: colourtext),
+          ),
+          TextField(
+            decoration: const InputDecoration(
+                border: OutlineInputBorder(), hintText: "Enter the plant name"),
+            controller: controller,
+          )
+        ],
       ),
     );
   }

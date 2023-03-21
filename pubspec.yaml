@@ -45,6 +45,7 @@ dependencies:
   hive: ^2.2.3
   google_maps_flutter: ^2.2.5
   google_maps_flutter_web: ^0.4.0+7
+  shared_preferences: ^2.0.18
 
 dev_dependencies:
   flutter_test:
