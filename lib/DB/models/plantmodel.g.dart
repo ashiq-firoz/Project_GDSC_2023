@@ -20,7 +20,7 @@ class PlantAdapter extends TypeAdapter<Plant> {
       coins: fields[2] as double,
       location: fields[1] as String,
       name: fields[0] as String,
-      varification: fields[3] as int,
+      verification: fields[3] as int,
     );
   }
 
@@ -35,7 +35,7 @@ class PlantAdapter extends TypeAdapter<Plant> {
       ..writeByte(2)
       ..write(obj.coins)
       ..writeByte(3)
-      ..write(obj.varification);
+      ..write(obj.verification);
   }
 
   @override

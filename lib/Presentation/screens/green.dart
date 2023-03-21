@@ -11,12 +11,14 @@ import 'package:project_17/Presentation/screens/weather.dart';
 import 'package:project_17/Presentation/screens/yellow.dart';
 import 'package:project_17/Presentation/widgets/bottomContainer.dart';
 import 'package:tflite/tflite.dart';
-import '../../DB/models/dynamic.dart';
+import '../../DB/models/plantmodel.dart';
 import '../Icons/icons.dart';
 
 var validations = 0;
 var totalCoins = 0.00;
 var totalplants = 0;
+
+Plant p = Plant(coins: 0.00, location: "", name: "p1", verification: 0);
 
 class GreenScreen extends StatelessWidget {
   const GreenScreen({super.key});
@@ -65,9 +67,11 @@ class Green1 extends StatelessWidget {
           valueListenable: data,
           builder: (BuildContext ctx, GreenData c, Widget? child) {
             getGreenData();
+            var temp = totalCoins;
             totalCoins = c.coins;
             validations = c.verifications;
             totalplants = c.totalplants;
+
             return ListView(
               padding: const EdgeInsets.only(top: 0.0),
               children: [
@@ -224,7 +228,7 @@ class _BottomcolumnState extends State<Bottomcolumn> {
 
     predict!.forEach((element) {
       out = element["label"];
-      if (out == "0 plant" || out == "1 tree") {
+      if (out == "0 tree") {
         setState(() {
           totalCoins = totalCoins + 0.001;
           validations = validations + 1;
@@ -233,6 +237,10 @@ class _BottomcolumnState extends State<Bottomcolumn> {
           data.value.verifications = validations;
           updateGreenData(data.value);
           data.notifyListeners();
+          p.coins = 0.001;
+          p.verification = 1;
+          addplant(p);
+          plantdata.notifyListeners();
         });
       }
     });
@@ -298,51 +306,25 @@ class _BottomcolumnState extends State<Bottomcolumn> {
           ),
         ),
         SizedBox(
-          height: 400,
-          child: ListView(
-            scrollDirection: Axis.vertical,
-            children: const [
-              //change this to a function generating list after adding db
-              Plants(
-                stage: "newbi",
-                coins: "10",
-                name: "p1",
-              ),
-              SizedBox(
-                height: 40.0,
-              ),
-              Plants(
-                stage: "newbi",
-                coins: "10",
-                name: "p1",
-              ),
-              SizedBox(
-                height: 40.0,
-              ),
-              Plants(
-                stage: "newbi",
-                coins: "10",
-                name: "p1",
-              ),
-              SizedBox(
-                height: 40.0,
-              ),
-              Plants(
-                stage: "newbi",
-                coins: "10",
-                name: "p1",
-              ),
-              SizedBox(
-                height: 40.0,
-              ),
-              Plants(
-                stage: "newbi",
-                coins: "10",
-                name: "p1",
-              ),
-            ],
-          ),
-        ),
+            height: 400,
+            child: ValueListenableBuilder(
+              valueListenable: plantdata,
+              builder: (BuildContext ctx, List<Plant> data, Widget? child) {
+                getplant();
+                return ListView.separated(
+                    itemBuilder: (ctx, index) {
+                      var c = data[index].coins;
+                      return Plants(
+                          stage: "Newbi", coins: "$c", name: data[index].name);
+                    },
+                    separatorBuilder: (ctx, index) {
+                      return const SizedBox(
+                        height: 40.0,
+                      );
+                    },
+                    itemCount: data.length);
+              },
+            )),
         const SizedBox(
           height: 50.0,
         ),
@@ -479,17 +461,14 @@ class Cardout extends StatelessWidget {
   Widget build(BuildContext context) {
     return Padding(
       padding: const EdgeInsets.fromLTRB(33.0, 16.0, 2.0, 0.0),
-      child: GestureDetector(
-        onTap: () => {print("hello")}, //change it to scroll down
-        child: Container(
-          decoration: BoxDecoration(
-            borderRadius: BorderRadius.circular(20.0),
-            color: const Color.fromARGB(125, 217, 217, 217),
-          ),
-          child: const Padding(
-            padding: EdgeInsets.all(8.0),
-            child: YourtreeIcon(),
-          ),
+      child: Container(
+        decoration: BoxDecoration(
+          borderRadius: BorderRadius.circular(20.0),
+          color: const Color.fromARGB(125, 217, 217, 217),
+        ),
+        child: const Padding(
+          padding: EdgeInsets.all(8.0),
+          child: YourtreeIcon(),
         ),
       ),
     );

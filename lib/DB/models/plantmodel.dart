@@ -13,11 +13,11 @@ class Plant {
   double coins;
 
   @HiveField(3)
-  int varification;
+  int verification;
 
   Plant(
       {required this.coins,
       required this.location,
       required this.name,
-      required this.varification});
+      required this.verification});
 }

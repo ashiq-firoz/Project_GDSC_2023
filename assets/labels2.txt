@@ -1,3 +1,2 @@
-0 plant
-1 tree
-2 others
+0 tree
+1 others

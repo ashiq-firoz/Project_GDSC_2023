@@ -80,4 +80,19 @@ Future<void> getBlueData() async {
 
 //plant database code starts
 
+String plantdbname = "PlantData";
+
 ValueNotifier<List<Plant>> plantdata = ValueNotifier([]);
+
+Future<void> addplant(Plant data) async {
+  final plantdb = await Hive.openBox<Plant>(plantdbname);
+  await plantdb.add(data);
+}
+
+Future<void> getplant() async {
+  final plantdb = await Hive.openBox<Plant>(plantdbname);
+  plantdata.value.clear();
+
+  plantdata.value.addAll(plantdb.values);
+  plantdata.notifyListeners();
+}

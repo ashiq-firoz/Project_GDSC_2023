@@ -1,9 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:hive_flutter/hive_flutter.dart';
+import 'package:project_17/DB/functions/db_functions.dart';
+import 'package:project_17/DB/models/bluemodel.dart';
 import 'package:project_17/DB/models/dbmodels.dart';
+import 'package:project_17/DB/models/plantmodel.dart';
 import 'package:project_17/Presentation/screens/blue.dart';
 
 String greenbox = "GreenData";
+String bluedbname = "BlueData";
+String plantdbname = "PlantData";
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -11,6 +16,14 @@ Future<void> main() async {
   await Hive.openBox(greenbox);
   if (!Hive.isAdapterRegistered(GreenDataAdapter().typeId)) {
     Hive.registerAdapter(GreenDataAdapter());
+  }
+  await Hive.openBox(bluedbname);
+  if (!Hive.isAdapterRegistered(BlueDataAdapter().typeId)) {
+    Hive.registerAdapter(BlueDataAdapter());
+  }
+
+  if (!Hive.isAdapterRegistered(PlantAdapter().typeId)) {
+    Hive.registerAdapter(PlantAdapter());
   }
   runApp(const App());
 }
