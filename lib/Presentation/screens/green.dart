@@ -55,12 +55,20 @@ class Green1 extends StatelessWidget {
     return Container(
       decoration: BoxDecoration(
           gradient: LinearGradient(
+            
         colors: [
-          Color.fromARGB(100, 42, 121, 10),
-          Color.fromARGB(100, 16, 121, 56),
-          Color.fromARGB(100, 79, 126, 10),
-          Color.fromARGB(100, 11, 167, 150),
+          Color.fromARGB(97, 0, 213, 18),
+          Color.fromARGB(95, 0, 184, 16),
+          Color.fromARGB(95, 0, 154, 14),
+          Color.fromARGB(95, 255, 255, 255),
+          // Color.fromARGB(95, 0, 0, 0),
         ],
+        stops: [
+              0.1,
+              0.3,
+              0.9,
+              0.95,
+            ],
         transform: GradientRotation(pi / 2),
       )),
       child: SafeArea(
