@@ -45,11 +45,17 @@ class Yellow1 extends StatelessWidget {
       decoration: BoxDecoration(
             gradient: LinearGradient(
               colors: [
-                Color.fromARGB(255, 255, 255, 82),
-                Color.fromARGB(255, 233, 255, 36),
-                Color.fromARGB(255, 238, 255, 0),
-                Color.fromARGB(255, 255, 242, 1),
+                Color.fromARGB(155, 222, 234, 0),
+                Color.fromARGB(135, 222, 234, 0),
+                Color.fromARGB(115, 222, 234, 0),
+                Color.fromARGB(95, 222, 234, 0),
               ],
+              stops: [
+              0.1,
+              0.25,
+              0.4,
+              0.9,
+            ],
               transform: GradientRotation(pi/2),
             )
           ),

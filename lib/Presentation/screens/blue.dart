@@ -64,11 +64,17 @@ class Blue1 extends StatelessWidget {
     return Container(
       decoration: BoxDecoration(
           gradient: LinearGradient(
+            stops: [
+              0.1,
+              0.25,
+              0.4,
+              0.9,
+            ],
         colors: [
-          Color.fromARGB(100, 11, 141, 161),
-          Color.fromARGB(100, 10, 11, 121),
-          Color.fromARGB(100, 9, 9, 121),
-          Color.fromARGB(100, 2, 0, 36),
+          Color.fromARGB(99, 0, 38, 255),
+          Color.fromARGB(98, 0, 31, 206),
+          Color.fromARGB(97, 0, 22, 145),
+          Color.fromARGB(97, 1, 13, 85),
         ],
         transform: GradientRotation(pi / 2),
       )),
