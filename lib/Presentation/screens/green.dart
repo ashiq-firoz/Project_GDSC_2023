@@ -88,7 +88,7 @@ class Green1 extends StatelessWidget {
                 const Center(
                     child: Text(
                   "Your Plants",
-                  style: TextStyle(fontSize: 20.0, fontWeight: FontWeight.w600),
+                  style: TextStyle(fontFamily:'MontserratAlternates',fontSize: 20.0, fontWeight: FontWeight.w500),
                 )),
                 const SizedBox(
                   height: 50.0,
@@ -98,7 +98,7 @@ class Green1 extends StatelessWidget {
                   children: const [
                     Text(
                       "Coins",
-                      style: TextStyle(
+                      style: TextStyle(fontFamily:'MontserratAlternates',
                           fontSize: 20.0, fontWeight: FontWeight.w600),
                     ), // friends logo, Ilogo class defined below
                     SizedBox(
@@ -106,7 +106,7 @@ class Green1 extends StatelessWidget {
                     ),
                     Text(
                       "Verifications",
-                      style: TextStyle(
+                      style: TextStyle(fontFamily:'MontserratAlternates',
                           fontSize: 20.0, fontWeight: FontWeight.w600),
                     ),
                   ],
@@ -115,11 +115,13 @@ class Green1 extends StatelessWidget {
                   height: 10.0,
                 ),
                 Row(
+                  
                   mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                   children: [
                     Text(
                       "$totalCoins",
                       style: const TextStyle(
+                          
                           fontSize: 20.0, fontWeight: FontWeight.w600),
                     ),
                     const SizedBox(
@@ -297,7 +299,7 @@ class _BottomcolumnState extends State<Bottomcolumn> {
         const Center(
             child: Text(
           "Add a plant", //"Verify your plants"
-          style: TextStyle(fontSize: 30.0, color: colourtext),
+          style: TextStyle(fontFamily: 'MontserratAlternates',fontWeight:FontWeight.w500,fontSize: 30.0, color: colourtext),
         )),
         const Center(
             child: Text(
