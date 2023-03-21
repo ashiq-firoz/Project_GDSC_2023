@@ -2,6 +2,7 @@ import 'dart:math';
 import 'dart:io';
 
 import 'package:flutter/material.dart';
+import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:project_17/DB/functions/db_functions.dart';
 import 'package:project_17/DB/models/dbmodels.dart';
@@ -91,7 +92,7 @@ class Green1 extends StatelessWidget {
                 const Center(
                     child: Text(
                   "Your Plants",
-                  style: TextStyle(fontSize: 20.0, fontWeight: FontWeight.w600),
+                  style: TextStyle(fontFamily:'MontserratAlternates',fontSize: 20.0, fontWeight: FontWeight.w500),
                 )),
                 const SizedBox(
                   height: 50.0,
@@ -101,7 +102,7 @@ class Green1 extends StatelessWidget {
                   children: const [
                     Text(
                       "Coins",
-                      style: TextStyle(
+                      style: TextStyle(fontFamily:'MontserratAlternates',
                           fontSize: 20.0, fontWeight: FontWeight.w600),
                     ), // friends logo, Ilogo class defined below
                     SizedBox(
@@ -109,7 +110,7 @@ class Green1 extends StatelessWidget {
                     ),
                     Text(
                       "Verifications",
-                      style: TextStyle(
+                      style: TextStyle(fontFamily:'MontserratAlternates',
                           fontSize: 20.0, fontWeight: FontWeight.w600),
                     ),
                   ],
@@ -118,11 +119,13 @@ class Green1 extends StatelessWidget {
                   height: 10.0,
                 ),
                 Row(
+                  
                   mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                   children: [
                     Text(
                       "$totalCoins",
                       style: const TextStyle(
+                          
                           fontSize: 20.0, fontWeight: FontWeight.w600),
                     ),
                     const SizedBox(
@@ -245,7 +248,47 @@ class _BottomcolumnState extends State<Bottomcolumn> {
       }
     });
   }
+  // start google maps section
+   late GoogleMapController mapController;
 
+  final LatLng _center = const LatLng(9.754586, 76.649583);
+  final List<Marker> marker = const [
+    Marker(
+        markerId: MarkerId("Kochi"),
+        position: LatLng(9.9312, 76.2673),
+        infoWindow: InfoWindow(
+          title: "Kochi",
+        )),
+    Marker(
+        markerId: MarkerId("Trivandrum"),
+        position: LatLng(8.5241, 76.9366),
+        infoWindow: InfoWindow(
+          title: "Trivandrum",
+        )),
+    Marker(
+        markerId: MarkerId("Goa"),
+        position: LatLng(15.2993, 74.1240),
+        infoWindow: InfoWindow(
+          title: "Goa",
+        )),
+    Marker(
+        markerId: MarkerId("Alappuzha"),
+        position: LatLng(9.4981, 76.3388),
+        infoWindow: InfoWindow(
+          title: "Alappuzha",
+        )),
+        Marker(
+        markerId: MarkerId("KTYM"),
+        position: LatLng(9.754586, 76.649583),
+        infoWindow: InfoWindow(
+          title: "IIIT Kottayam",
+        ))
+  ];
+
+  void _onMapCreated(GoogleMapController controller){
+    mapController= controller;
+  }
+//end google maps section
   @override
   Widget build(BuildContext context) {
     return Column(
@@ -264,7 +307,7 @@ class _BottomcolumnState extends State<Bottomcolumn> {
         const Center(
             child: Text(
           "Add a plant", //"Verify your plants"
-          style: TextStyle(fontSize: 30.0, color: colourtext),
+          style: TextStyle(fontFamily: 'MontserratAlternates',fontWeight:FontWeight.w500,fontSize: 30.0, color: colourtext),
         )),
         const Center(
             child: Text(
@@ -276,7 +319,23 @@ class _BottomcolumnState extends State<Bottomcolumn> {
         ),
 
         //map widget should be placed here
+        //Google maps widget
+        SizedBox(
+          height: 600,
+          child: GoogleMap(
+              onMapCreated: _onMapCreated,
+              initialCameraPosition: CameraPosition(
+                target: _center,
+                zoom: 6.0,
+                
+                ),
+                markers: Set.of(marker),
+              ),
+        ) ,
 
+
+
+      
         SizedBox(
           height: 300,
           child: ListView(

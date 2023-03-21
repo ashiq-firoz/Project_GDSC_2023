@@ -26,27 +26,31 @@ class BlueScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      extendBodyBehindAppBar: true,
-      backgroundColor: colourblue,
-      appBar: AppBar(
-        backgroundColor: Colors.transparent,
-        elevation: 0.0,
-        leading: const Icon(
-          blueLogo,
-          color: Colors.white,
+    return MaterialApp(
+      theme: ThemeData(fontFamily: 'Poppins'),
+      home: Scaffold(
+        
+        extendBodyBehindAppBar: true,
+        backgroundColor: colourblue,
+        appBar: AppBar(
+          backgroundColor: Colors.transparent,
+          elevation: 0.0,
+          leading: const Icon(
+            blueLogo,
+            color: Colors.white,
+          ),
+          title: ValueListenableBuilder(
+            valueListenable: bluedata,
+            builder: (BuildContext ctx1, BlueData data, Widget? child) {
+              return Text(data.level);
+            },
+          ),
         ),
-        title: ValueListenableBuilder(
-          valueListenable: bluedata,
-          builder: (BuildContext ctx1, BlueData data, Widget? child) {
-            return Text(data.level);
-          },
+        body: const Blue1(),
+        bottomNavigationBar: const BottomAppBar(
+          color: colorbottomcont,
+          child: Bottombar(),
         ),
-      ),
-      body: const Blue1(),
-      bottomNavigationBar: const BottomAppBar(
-        color: colorbottomcont,
-        child: Bottombar(),
       ),
     );
   }
