@@ -21,7 +21,8 @@ Future<void> main() async {
   if (!Hive.isAdapterRegistered(BlueDataAdapter().typeId)) {
     Hive.registerAdapter(BlueDataAdapter());
   }
-
+  // h1.deleteFromDisk();
+  // h2.deleteFromDisk();
   if (!Hive.isAdapterRegistered(PlantAdapter().typeId)) {
     Hive.registerAdapter(PlantAdapter());
   }
@@ -34,7 +35,7 @@ class App extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return const MaterialApp(
-            home: Screen(),
+      home: Screen(),
     );
   }
 }

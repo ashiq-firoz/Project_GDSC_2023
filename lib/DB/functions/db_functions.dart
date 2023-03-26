@@ -11,11 +11,14 @@ String greendbname = "GreenData";
 ValueNotifier<GreenData> data =
     ValueNotifier(GreenData(coins: 0.000, totalplants: 0, verifications: 0));
 
+int totalPlants = 0;
+
 Future<void> updateGreenData(GreenData data) async {
   final greendb = await Hive.box(greendbname);
   greendb.put("coins", data.coins);
   greendb.put("totalplants", data.totalplants);
   greendb.put("verifications", data.verifications);
+  totalPlants = data.totalplants;
 }
 
 Future<void> getGreenData() async {
@@ -23,6 +26,7 @@ Future<void> getGreenData() async {
   data.value.coins = greendb.get("coins", defaultValue: 0.000);
   data.value.totalplants = greendb.get("totalplants", defaultValue: 0);
   data.value.verifications = greendb.get("verifications", defaultValue: 0);
+
   data.notifyListeners();
 }
 
@@ -86,7 +90,10 @@ ValueNotifier<List<Plant>> plantdata = ValueNotifier([]);
 
 Future<void> addplant(Plant data) async {
   final plantdb = await Hive.openBox<Plant>(plantdbname);
+  //plantdb.deleteFromDisk();
+  data.id = totalPlants;
   await plantdb.add(data);
+  getplant();
 }
 
 Future<void> getplant() async {
@@ -95,4 +102,20 @@ Future<void> getplant() async {
 
   plantdata.value.addAll(plantdb.values);
   plantdata.notifyListeners();
+}
+
+Future<void> delete() async {
+  final d1 = await Hive.openBox<Plant>(plantdbname);
+  d1.deleteFromDisk();
+  // final gl = await Hive.box(greendbname);
+  // gl.deleteFromDisk();
+}
+
+Future<void> updatePlant(int? id, data) async {
+  final plantdb = await Hive.openBox<Plant>(plantdbname);
+  if (id != null) {
+    id = id - 1;
+    plantdb.putAt(id, data);
+    getplant();
+  }
 }

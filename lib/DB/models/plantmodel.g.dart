@@ -17,24 +17,27 @@ class PlantAdapter extends TypeAdapter<Plant> {
       for (int i = 0; i < numOfFields; i++) reader.readByte(): reader.read(),
     };
     return Plant(
-      coins: fields[2] as double,
-      location: fields[1] as String,
-      name: fields[0] as String,
-      verification: fields[3] as int,
+      coins: fields[3] as double,
+      location: fields[2] as String,
+      name: fields[1] as String,
+      verification: fields[4] as int,
+      id: fields[0] as int?,
     );
   }
 
   @override
   void write(BinaryWriter writer, Plant obj) {
     writer
-      ..writeByte(4)
+      ..writeByte(5)
       ..writeByte(0)
-      ..write(obj.name)
+      ..write(obj.id)
       ..writeByte(1)
-      ..write(obj.location)
+      ..write(obj.name)
       ..writeByte(2)
-      ..write(obj.coins)
+      ..write(obj.location)
       ..writeByte(3)
+      ..write(obj.coins)
+      ..writeByte(4)
       ..write(obj.verification);
   }
 

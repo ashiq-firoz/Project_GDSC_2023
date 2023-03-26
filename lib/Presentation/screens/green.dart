@@ -58,7 +58,6 @@ class Green1 extends StatelessWidget {
     return Container(
       decoration: BoxDecoration(
           gradient: LinearGradient(
-            
         colors: [
           Color.fromARGB(97, 0, 213, 18),
           Color.fromARGB(95, 0, 184, 16),
@@ -67,11 +66,11 @@ class Green1 extends StatelessWidget {
           // Color.fromARGB(95, 0, 0, 0),
         ],
         stops: [
-              0.1,
-              0.3,
-              0.9,
-              0.95,
-            ],
+          0.1,
+          0.3,
+          0.9,
+          0.95,
+        ],
         transform: GradientRotation(pi / 2),
       )),
       child: SafeArea(
@@ -253,13 +252,13 @@ class _BottomcolumnState extends State<Bottomcolumn> {
           totalCoins = double.parse(totalCoins.toStringAsFixed(3));
           validations = validations + 1;
           data.value.coins = totalCoins;
-          data.value.totalplants = 1;
+          data.value.totalplants = totalplants + 1;
           data.value.verifications = validations;
           updateGreenData(data.value);
           data.notifyListeners();
           p.coins = 0.001;
           p.verification = 1;
-          addplant(p);
+          //addplant(p);
           plantdata.notifyListeners();
         });
         detected.setBool("greenfound", true);
@@ -315,22 +314,26 @@ class _BottomcolumnState extends State<Bottomcolumn> {
   Widget build(BuildContext context) {
     void showSnackBar(BuildContext context) async {
       SharedPreferences detect = await SharedPreferences.getInstance();
-      String message = "";
-      var color;
-      if (detect.getBool("greenfound")!) {
-        color = successcolor;
-        message = "Verified";
-      } else {
-        color = errcolor;
-        message = "Not Verified";
-      }
-      final snackBar = SnackBar(
-        content: Text(message),
-        backgroundColor: color,
+
+      const snackBar = SnackBar(
+        content: Text("Not Verified"),
+        backgroundColor: errcolor,
         behavior: SnackBarBehavior.floating,
+        duration: Duration(seconds: 10),
         elevation: 30,
       );
-      ScaffoldMessenger.of(context).showSnackBar(snackBar);
+
+      bool b = detect.getBool("greenfound")!;
+
+      if (b) {
+        showModalBottomSheet<void>(
+            context: context,
+            builder: (BuildContext context) {
+              return const Name();
+            });
+      } else {
+        ScaffoldMessenger.of(context).showSnackBar(snackBar);
+      }
     }
 
     return Column(
@@ -356,28 +359,28 @@ class _BottomcolumnState extends State<Bottomcolumn> {
               fontSize: 30.0,
               color: colourtext),
         )),
-        const Center(
-            child: Text(
-          "Verify nearby plant", //"Verify your plants"
-          style: TextStyle(fontSize: 30.0, color: colourtext),
-        )),
+        // const Center(
+        //     child: Text(
+        //   "Verify nearby plant", //"Verify your plants"
+        //   style: TextStyle(fontSize: 30.0, color: colourtext),
+        // )),
         const SizedBox(
           height: 60.0,
         ),
 
         //map widget should be placed here
         //Google maps widget
-        SizedBox(
-          height: 600,
-          child: GoogleMap(
-            onMapCreated: _onMapCreated,
-            initialCameraPosition: CameraPosition(
-              target: _center,
-              zoom: 6.0,
-            ),
-            markers: Set.of(marker),
-          ),
-        ),
+        // SizedBox(
+        //   height: 600,
+        //   child: GoogleMap(
+        //     onMapCreated: _onMapCreated,
+        //     initialCameraPosition: CameraPosition(
+        //       target: _center,
+        //       zoom: 6.0,
+        //     ),
+        //     markers: Set.of(marker),
+        //   ),
+        // ),
 
         SizedBox(
           height: 300,
@@ -416,8 +419,14 @@ class _BottomcolumnState extends State<Bottomcolumn> {
                 return ListView.separated(
                     itemBuilder: (ctx, index) {
                       var c = data[index].coins;
+                      // print("id : -> ");
+                      // print(data[index].id);
                       return Plants(
-                          stage: "Newbi", coins: "$c", name: data[index].name);
+                        stage: "Newbi",
+                        coins: "$c",
+                        name: data[index].name,
+                        data: data[index],
+                      );
                     },
                     separatorBuilder: (ctx, index) {
                       return const SizedBox(
@@ -479,18 +488,97 @@ class Ilogo extends StatelessWidget {
 }
 
 //Your plants
-class Plants extends StatelessWidget {
+class Plants extends StatefulWidget {
   final stage;
   final coins;
   final name;
+  final Plant data;
   const Plants(
       {super.key,
       required this.stage,
       required this.coins,
-      required this.name});
+      required this.name,
+      required this.data});
+
+  @override
+  State<Plants> createState() => _PlantsState();
+}
+
+class _PlantsState extends State<Plants> {
+  late File _img;
+  String out = "";
+  getimage() async {
+    final img = await ImagePicker().pickImage(source: ImageSource.gallery);
+
+    setState(() {
+      _img = File(img!.path);
+    });
+    runModel();
+  }
+
+  runModel() async {
+    await Tflite.loadModel(
+        model: "assets/model2.tflite", labels: "assets/labels2.txt");
+    var predict = await Tflite.runModelOnImage(
+      path: _img.path,
+      imageMean: 0.0,
+      imageStd: 255.0,
+      numResults: 2,
+      threshold: 0.1,
+      asynch: true,
+    );
+    SharedPreferences detected = await SharedPreferences.getInstance();
+    predict!.forEach((element) {
+      out = element["label"];
+      if (out == "0 tree") {
+        setState(() {
+          totalCoins = totalCoins + 0.001;
+          totalCoins = double.parse(totalCoins.toStringAsFixed(3));
+          validations = validations + 1;
+          data.value.coins = totalCoins;
+          data.value.totalplants = totalplants;
+          data.value.verifications = validations;
+          updateGreenData(data.value);
+          data.notifyListeners();
+          p.coins = 0.001 + widget.data.coins;
+          p.verification = 1 + widget.data.verification;
+          p.name = widget.data.name;
+          p.id = widget.data.id;
+          updatePlant(widget.data.id, p);
+          plantdata.notifyListeners();
+        });
+        detected.setBool("greenfound", true);
+      } else {
+        detected.setBool("greenfound", false);
+      }
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
+    void showmessagebar() async {
+      String message = "";
+      var color;
+      SharedPreferences detect = await SharedPreferences.getInstance();
+      bool? b = detect.getBool("greenfound");
+
+      if (b!) {
+        message = "Done";
+        color = successcolor;
+      } else {
+        message = "Not Verified";
+        color = errcolor;
+      }
+      final snackBar = SnackBar(
+        content: Text(message),
+        backgroundColor: color,
+        behavior: SnackBarBehavior.floating,
+        duration: Duration(seconds: 1),
+        elevation: 30,
+      );
+      ScaffoldMessenger.of(context).showSnackBar(snackBar);
+    }
+
     return Container(
       decoration: BoxDecoration(
         color: Colors.grey[700],
@@ -506,7 +594,7 @@ class Plants extends StatelessWidget {
           mainAxisAlignment: MainAxisAlignment.spaceEvenly,
           children: [
             Text(
-              name,
+              widget.name,
               style: const TextStyle(color: colourtext),
             ),
             Column(
@@ -520,7 +608,7 @@ class Plants extends StatelessWidget {
                   height: 10.0,
                 ),
                 Text(
-                  stage,
+                  widget.stage,
                   style: const TextStyle(color: colourtext),
                 )
               ],
@@ -536,7 +624,7 @@ class Plants extends StatelessWidget {
                   height: 10.0,
                 ),
                 Text(
-                  coins,
+                  widget.coins,
                   style: const TextStyle(color: colourtext),
                 )
               ],
@@ -544,7 +632,10 @@ class Plants extends StatelessWidget {
           ],
         ),
         trailing: IconButton(
-            onPressed: () {},
+            onPressed: () async {
+              await getimage();
+              showmessagebar();
+            },
             icon: const Icon(
               Icons.camera,
               color: colouricon,
@@ -607,19 +698,51 @@ class Name extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Center(
-      child: Row(
-        mainAxisAlignment: MainAxisAlignment.spaceAround,
+    return Container(
+      color: successcolor,
+      height: 280.0,
+      child: Column(
         children: [
-          const Text(
-            "Plant name : ",
-            style: TextStyle(color: colourtext),
+          SizedBox(
+            height: 60.0,
           ),
-          TextField(
-            decoration: const InputDecoration(
-                border: OutlineInputBorder(), hintText: "Enter the plant name"),
-            controller: controller,
-          )
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceAround,
+            children: [
+              const Text(
+                "Plant name : ",
+                style: TextStyle(color: colourtext),
+              ),
+              SizedBox(
+                width: 150,
+                child: TextField(
+                  decoration: const InputDecoration(
+                      border: OutlineInputBorder(),
+                      fillColor: Colors.white,
+                      hintText: "Enter the plant name"),
+                  controller: controller,
+                ),
+              )
+            ],
+          ),
+          SizedBox(
+            height: 40.0,
+          ),
+          Center(
+              child: TextButton(
+            child: Text(
+              "Done",
+              style: TextStyle(color: colourtext),
+            ),
+            style: TextButton.styleFrom(
+              backgroundColor: Colors.teal,
+            ),
+            onPressed: () {
+              p.name = controller.text;
+              addplant(p);
+              Navigator.pop(context);
+            },
+          ))
         ],
       ),
     );

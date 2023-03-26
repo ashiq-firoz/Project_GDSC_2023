@@ -4,20 +4,24 @@ part 'plantmodel.g.dart';
 @HiveType(typeId: 3)
 class Plant {
   @HiveField(0)
-  String name;
+  int? id;
 
   @HiveField(1)
-  String location;
+  String name;
 
   @HiveField(2)
-  double coins;
+  String location;
 
   @HiveField(3)
+  double coins;
+
+  @HiveField(4)
   int verification;
 
   Plant(
       {required this.coins,
       required this.location,
       required this.name,
-      required this.verification});
+      required this.verification,
+      this.id});
 }
