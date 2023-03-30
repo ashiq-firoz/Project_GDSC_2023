@@ -2,6 +2,7 @@ import 'dart:math';
 import 'dart:io';
 
 import 'package:flutter/material.dart';
+import 'package:geolocator/geolocator.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:project_17/DB/functions/db_functions.dart';
@@ -20,7 +21,63 @@ var validations = 0;
 var totalCoins = 0.00;
 var totalplants = 0;
 
-Plant p = Plant(coins: 0.00, location: "", name: "p1", verification: 0);
+// Day difference
+int daysBetween(DateTime from, DateTime to) {
+  from = DateTime(from.year, from.month, from.day);
+  to = DateTime(to.year, to.month, to.day);
+  return (to.difference(from).inHours / 24).round();
+}
+//
+
+// geolocator code starts
+Future<Position> _determinePosition() async {
+  bool serviceEnabled;
+  LocationPermission permission;
+
+  // Test if location services are enabled.
+  serviceEnabled = await Geolocator.isLocationServiceEnabled();
+  if (!serviceEnabled) {
+    // Location services are not enabled don't continue
+    // accessing the position and request users of the
+    // App to enable the location services.
+    return Future.error('Location services are disabled.');
+  }
+
+  permission = await Geolocator.checkPermission();
+  if (permission == LocationPermission.denied) {
+    permission = await Geolocator.requestPermission();
+    if (permission == LocationPermission.denied) {
+      // Permissions are denied, next time you could try
+      // requesting permissions again (this is also where
+      // Android's shouldShowRequestPermissionRationale
+      // returned true. According to Android guidelines
+      // your App should show an explanatory UI now.
+      return Future.error('Location permissions are denied');
+    }
+  }
+
+  if (permission == LocationPermission.deniedForever) {
+    // Permissions are denied forever, handle appropriately.
+    return Future.error(
+        'Location permissions are permanently denied, we cannot request permissions.');
+  }
+
+  // When we reach here, permissions are granted and we can
+  // continue accessing the position of the device.
+  return await Geolocator.getCurrentPosition();
+}
+
+//geolocator code stops
+
+List<Marker> markerlist = [];
+
+Plant p = Plant(
+    coins: 0.00,
+    lat: 9.754586,
+    lng: 76.2673,
+    name: "p1",
+    verification: 0,
+    dob: DateTime.now());
 
 TextEditingController controller = TextEditingController();
 
@@ -56,7 +113,7 @@ class Green1 extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      decoration: BoxDecoration(
+      decoration: const BoxDecoration(
           gradient: LinearGradient(
         colors: [
           Color.fromARGB(97, 0, 213, 18),
@@ -271,8 +328,20 @@ class _BottomcolumnState extends State<Bottomcolumn> {
   // start google maps section
   late GoogleMapController mapController;
 
-  final LatLng _center = const LatLng(9.754586, 76.649583);
-  final List<Marker> marker = const [
+  void getmarker() async {
+    await getplant();
+    setState(() {
+      plantdata.value.forEach((element) {
+        //print(element.lat);
+        markerlist.add(Marker(
+            markerId: MarkerId(element.name),
+            position: LatLng(element.lat, element.lng)));
+      });
+    });
+  }
+
+  final LatLng _center = const LatLng(40.5853, -122.3949);
+  List<Marker> marker = const [
     Marker(
         markerId: MarkerId("Kochi"),
         position: LatLng(9.9312, 76.2673),
@@ -370,17 +439,17 @@ class _BottomcolumnState extends State<Bottomcolumn> {
 
         //map widget should be placed here
         //Google maps widget
-        // SizedBox(
-        //   height: 600,
-        //   child: GoogleMap(
-        //     onMapCreated: _onMapCreated,
-        //     initialCameraPosition: CameraPosition(
-        //       target: _center,
-        //       zoom: 6.0,
-        //     ),
-        //     markers: Set.of(marker),
-        //   ),
-        // ),
+        SizedBox(
+          height: 600,
+          child: GoogleMap(
+            onMapCreated: _onMapCreated,
+            initialCameraPosition: CameraPosition(
+              target: _center,
+              zoom: 6.0,
+            ),
+            markers: Set.of(markerlist),
+          ),
+        ),
 
         SizedBox(
           height: 300,
@@ -579,9 +648,35 @@ class _PlantsState extends State<Plants> {
       ScaffoldMessenger.of(context).showSnackBar(snackBar);
     }
 
+    void shower() {
+      int d = 5 - daysBetween(widget.data.dob, DateTime.now());
+      String message = "Wait for $d days";
+      final bar = SnackBar(
+        content: Text(
+          message,
+          style: const TextStyle(color: colourtext),
+        ),
+        backgroundColor: errcolor,
+        behavior: SnackBarBehavior.floating,
+        duration: Duration(seconds: 1),
+        elevation: 30,
+      );
+      ScaffoldMessenger.of(context).showSnackBar(bar);
+    }
+
+    var boxcolor = Colors.grey[700];
+    bool ready = false;
+    int diff = daysBetween(widget.data.dob, DateTime.now());
+    if (diff >= 5) {
+      boxcolor = successcolor;
+      ready = true;
+    } else {
+      ready = false;
+    }
+
     return Container(
       decoration: BoxDecoration(
-        color: Colors.grey[700],
+        color: boxcolor,
         borderRadius: BorderRadius.circular(20),
       ),
       child: ListTile(
@@ -633,8 +728,12 @@ class _PlantsState extends State<Plants> {
         ),
         trailing: IconButton(
             onPressed: () async {
-              await getimage();
-              showmessagebar();
+              if (ready) {
+                await getimage();
+                showmessagebar();
+              } else {
+                shower();
+              }
             },
             icon: const Icon(
               Icons.camera,
@@ -739,7 +838,16 @@ class Name extends StatelessWidget {
             ),
             onPressed: () {
               p.name = controller.text;
+              _determinePosition().then((value) {
+                p.lat = value.latitude;
+                p.lng = value.longitude;
+                print("new lat long ::");
+                print(p.lat);
+                print(p.lng);
+              });
+              p.dob = DateTime.now();
               addplant(p);
+
               Navigator.pop(context);
             },
           ))

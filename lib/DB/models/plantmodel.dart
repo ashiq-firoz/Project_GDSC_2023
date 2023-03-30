@@ -10,18 +10,26 @@ class Plant {
   String name;
 
   @HiveField(2)
-  String location;
+  double lat;
 
   @HiveField(3)
-  double coins;
+  double lng;
 
   @HiveField(4)
+  double coins;
+
+  @HiveField(5)
   int verification;
+
+  @HiveField(6)
+  DateTime dob;
 
   Plant(
       {required this.coins,
-      required this.location,
+      required this.lat,
+      required this.lng,
       required this.name,
       required this.verification,
+      required this.dob,
       this.id});
 }

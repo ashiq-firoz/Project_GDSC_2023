@@ -107,8 +107,6 @@ Future<void> getplant() async {
 Future<void> delete() async {
   final d1 = await Hive.openBox<Plant>(plantdbname);
   d1.deleteFromDisk();
-  // final gl = await Hive.box(greendbname);
-  // gl.deleteFromDisk();
 }
 
 Future<void> updatePlant(int? id, data) async {

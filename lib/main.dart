@@ -5,6 +5,7 @@ import 'package:project_17/DB/models/bluemodel.dart';
 import 'package:project_17/DB/models/dbmodels.dart';
 import 'package:project_17/DB/models/plantmodel.dart';
 import 'package:project_17/Presentation/screens/blue.dart';
+import 'package:project_17/Presentation/screens/splash.dart';
 
 String greenbox = "GreenData";
 String bluedbname = "BlueData";
@@ -45,6 +46,6 @@ class Screen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return BlueScreen();
+    return SplashScreen();
   }
 }
