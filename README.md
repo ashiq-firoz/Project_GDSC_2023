@@ -3,6 +3,7 @@
 A new Flutter project.
 
 ## Getting Started
+flutter packages pub run build_runner watch --use-polling-watcher --delete-conflicting-outputs
 
 This project is a starting point for a Flutter application.
 

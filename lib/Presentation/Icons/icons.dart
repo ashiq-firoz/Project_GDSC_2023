@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+
 const camIcon = Icons.add_a_photo_outlined;
 
 const blueLogo = Icons.water_drop;
@@ -43,7 +44,20 @@ class YourtreeIcon extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Icon(
-      Icons.nature_people,
+      Icons.forest_rounded,
+      color: Colors.black,
+      size: 120.0,
+    );
+  }
+}
+
+class YourblueIcon extends StatelessWidget {
+  const YourblueIcon({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return Icon(
+      Icons.scatter_plot_outlined,
       color: Colors.black,
       size: 120.0,
     );

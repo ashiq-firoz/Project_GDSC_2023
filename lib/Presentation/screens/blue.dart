@@ -3,6 +3,8 @@ import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:project_17/DB/functions/db_functions.dart';
+import 'package:project_17/DB/models/bluemodel.dart';
 import 'package:project_17/Presentation/Colors/colors.dart';
 import 'package:project_17/Presentation/Icons/icons.dart';
 import 'package:project_17/Presentation/screens/green.dart';
@@ -10,6 +12,7 @@ import 'package:project_17/Presentation/screens/weather.dart';
 import 'package:project_17/Presentation/screens/yellow.dart';
 import 'package:project_17/Presentation/widgets/bottomContainer.dart';
 import 'package:project_17/Presentation/widgets/counter.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:tflite/tflite.dart';
 import '../../DB/models/dynamic.dart';
 
@@ -19,27 +22,40 @@ var coinCount = 0.00;
 ValueNotifier<Countdata> Count =
     ValueNotifier(Countdata(coinCount: 0.00, validation: 0));
 
+void initial() async {
+  SharedPreferences b = await SharedPreferences.getInstance();
+  b.setBool("trashfound", false);
+}
+
 class BlueScreen extends StatelessWidget {
   const BlueScreen({super.key});
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      extendBodyBehindAppBar: true,
-      backgroundColor: colourblue,
-      appBar: AppBar(
-        backgroundColor: Colors.transparent,
-        elevation: 0.0,
-        leading: const Icon(
-          blueLogo,
-          color: Colors.white,
+    return MaterialApp(
+      theme: ThemeData(fontFamily: 'Poppins'),
+      home: Scaffold(
+        extendBodyBehindAppBar: true,
+        backgroundColor: colourblue,
+        appBar: AppBar(
+          backgroundColor: Colors.transparent,
+          elevation: 0.0,
+          leading: const Icon(
+            blueLogo,
+            color: Colors.white,
+          ),
+          title: ValueListenableBuilder(
+            valueListenable: bluedata,
+            builder: (BuildContext ctx1, BlueData data, Widget? child) {
+              return Text(data.level);
+            },
+          ),
         ),
-        title: Text("Level1"),
-      ),
-      body: const Blue1(),
-      bottomNavigationBar: const BottomAppBar(
-        color: colorbottomcont,
-        child: Bottombar(),
+        body: const Blue1(),
+        bottomNavigationBar: const BottomAppBar(
+          color: colorbottomcont,
+          child: Bottombar(),
+        ),
       ),
     );
   }
@@ -50,14 +66,21 @@ class Blue1 extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    initial();
     return Container(
-      decoration: BoxDecoration(
+      decoration: const BoxDecoration(
           gradient: LinearGradient(
+        stops: [
+          0.1,
+          0.25,
+          0.4,
+          0.9,
+        ],
         colors: [
-          Color.fromARGB(100, 11, 141, 161),
-          Color.fromARGB(100, 10, 11, 121),
-          Color.fromARGB(100, 9, 9, 121),
-          Color.fromARGB(100, 2, 0, 36),
+          Color.fromARGB(99, 0, 38, 255),
+          Color.fromARGB(98, 0, 31, 206),
+          Color.fromARGB(97, 0, 22, 145),
+          Color.fromARGB(97, 1, 13, 85),
         ],
         transform: GradientRotation(pi / 2),
       )),
@@ -69,12 +92,12 @@ class Blue1 extends StatelessWidget {
             ),
             Row(
               mainAxisAlignment: MainAxisAlignment.start,
-              children: const [
+              children: [
                 Counter(), //counter.dart
-                SizedBox(
+                const SizedBox(
                   width: 60.0,
                 ),
-                Stats(
+                const Stats(
                     icon1: Icons.currency_rupee,
                     icon2: Icons.recycling) //stats class defined below
               ],
@@ -186,10 +209,10 @@ class Stats extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return ValueListenableBuilder(
-      valueListenable: Count,
-      builder: (BuildContext ctx, Countdata val, Widget? child) {
-        coinCount = val.coinCount;
-        trashCount = val.validation;
+      valueListenable: bluedata,
+      builder: (BuildContext ctx, BlueData val, Widget? child) {
+        coinCount = val.coins;
+        trashCount = val.trash;
         return Column(
           mainAxisAlignment: MainAxisAlignment.start,
           children: [
@@ -244,6 +267,7 @@ class _CameraIconState extends State<CameraIcon> {
 
   String out = "";
   File? _img;
+  bool clean = false;
 
   loadimage() async {
     final image = await ImagePicker().pickImage(source: ImageSource.gallery);
@@ -267,18 +291,32 @@ class _CameraIconState extends State<CameraIcon> {
       asynch: true,
     );
     await Tflite.close();
+    SharedPreferences b = await SharedPreferences.getInstance();
+    bool? trashfound = b.getBool("trash");
     //print("prediction ");
     perdict!.forEach((element) {
       setState(() {
         out = element["label"];
         //print(out);
-        if (out == "0 trash") {
-          //print("trash");
-          coinCount = coinCount + 0.001;
-          trashCount = trashCount + 1;
-          Count.value.coinCount = coinCount;
-          Count.value.validation = trashCount;
-          Count.notifyListeners();
+        if (trashfound!) {
+          if (out != "0 trash") {
+            //print("trash");
+            coinCount = coinCount + 0.001;
+            trashCount = trashCount + 1;
+
+            bluedata.value.coins = totalCoins;
+            bluedata.value.trash = trashCount;
+            updateBlueData(bluedata.value);
+            b.setBool("trash", false);
+            clean = false;
+            bluedata.notifyListeners();
+          }
+        } else {
+          if (out == "0 trash") {
+            //print("trash");
+            clean = true;
+            b.setBool("trash", true);
+          }
         }
         //print(out);
       });
@@ -287,22 +325,42 @@ class _CameraIconState extends State<CameraIcon> {
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      width: width,
-      height: height,
-      decoration: const BoxDecoration(
-        color: coloriconbtmbg,
-        shape: BoxShape.circle,
-      ),
-      child: IconButton(
-          onPressed: () {
-            loadimage();
-          },
-          icon: const Icon(
-            camIcon,
-            color: colouricon,
-            size: 100.0,
-          )),
-    );
+    if (clean) {
+      return Container(
+        width: width,
+        height: height,
+        decoration: const BoxDecoration(
+          color: Color.fromRGBO(66, 165, 245, 1),
+          shape: BoxShape.circle,
+        ),
+        child: IconButton(
+            onPressed: () {
+              loadimage();
+            },
+            icon: const Icon(
+              camIcon,
+              color: colouricon,
+              size: 100.0,
+            )),
+      );
+    } else {
+      return Container(
+        width: width,
+        height: height,
+        decoration: const BoxDecoration(
+          color: coloriconbtmbg,
+          shape: BoxShape.circle,
+        ),
+        child: IconButton(
+            onPressed: () {
+              loadimage();
+            },
+            icon: const Icon(
+              camIcon,
+              color: colouricon,
+              size: 100.0,
+            )),
+      );
+    }
   }
 }

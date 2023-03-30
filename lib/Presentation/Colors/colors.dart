@@ -31,3 +31,8 @@ const coloriconbg = Color.fromARGB(66, 149, 181, 241);
 
 //Bottom Container Icon background color
 const coloriconbtmbg = Color.fromARGB(204, 149, 154, 163);
+
+// Error bg color
+const errcolor = Color.fromRGBO(211, 47, 47, 1);
+
+const successcolor = Color.fromRGBO(56, 142, 60, 1);

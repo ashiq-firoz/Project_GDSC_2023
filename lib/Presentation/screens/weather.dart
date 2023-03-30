@@ -56,17 +56,22 @@ class Weather1 extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-        decoration: BoxDecoration(
-            gradient: LinearGradient(
-              colors: [
-                Color.fromARGB(255, 148, 148, 148),
-                Color.fromARGB(255, 93, 93, 93),
-                Color.fromARGB(255, 41, 41, 41),
-                Color.fromARGB(255, 66, 66, 66),
-              ],
-              transform: GradientRotation(pi/2),
-            )
-          ),
+      decoration: BoxDecoration(
+          gradient: LinearGradient(
+        colors: [
+          Color.fromARGB(255, 98, 97, 97),
+          Color.fromARGB(255, 92, 92, 92),
+          Color.fromARGB(255, 85, 85, 85),
+          Color.fromARGB(255, 66, 66, 66),
+        ],
+        stops: [
+          0.1,
+          0.25,
+          0.4,
+          0.9,
+        ],
+        transform: GradientRotation(pi / 2),
+      )),
       child: SafeArea(
         child: ListView(
           children: [
@@ -76,7 +81,7 @@ class Weather1 extends StatelessWidget {
             Row(
               mainAxisAlignment: MainAxisAlignment.start,
               children: const [
-                Counter(), //counter.dart
+                //Counter(), //counter.dart
                 SizedBox(
                   width: 60.0,
                 ),
