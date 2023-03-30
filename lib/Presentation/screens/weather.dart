@@ -27,7 +27,21 @@ class WeatherScreen extends StatelessWidget {
         ),
         title: Text("Level1"),
       ),
-      body: const Weather1(),
+      body:
+      Column(children: [
+        currentWeather(Icons.wb_sunny_rounded,"26.3","Palakkad"),
+        SizedBox(height :20.0),
+        Text("Additional Information",
+        style: TextStyle(fontSize: 24.0,
+        color : Color.fromARGB(221, 238, 165, 69),
+        fontWeight: FontWeight.bold,
+        ),
+        ),
+        Divider(),
+        SizedBox(
+          height: 20.0,),
+          additionalInformation("24", "2", "1014", "24.6")
+      ],),
       bottomNavigationBar: const BottomAppBar(
         color: colorbottomcont,
         child: Bottombar(),
@@ -203,4 +217,111 @@ class Ilogo extends StatelessWidget {
       ),
     );
   }
+}
+Widget currentWeather(IconData icon,String temp,String location){
+  return Center(
+    child: Column(
+      crossAxisAlignment: CrossAxisAlignment.center,
+      mainAxisAlignment: MainAxisAlignment.center,
+      children: [
+        Icon(icon,
+        color: Colors.orange,
+        size : 64.0,
+        ),
+        SizedBox(
+          height : 10.0,
+          ),
+        Text(
+          "$temp",
+          style: TextStyle(
+            fontSize: 46.0,
+             )
+        ),
+        SizedBox(height:10.0),
+        Text("$location",
+              style: TextStyle(fontSize: 18.0,color: Color(0xFF5a5a5a),)
+        )
+      ],),
+  );
+}
+TextStyle titleFont= const TextStyle(fontWeight: FontWeight.w600,fontSize:18.0);
+TextStyle infoFont= const TextStyle(fontWeight: FontWeight.w400,fontSize:18.0);
+
+Widget additionalInformation(String wind,String humidity,String pressure,String feels_like){
+  
+  return Container(
+    width : double.infinity,
+    padding: EdgeInsets.all(18.0),
+    child :Column(
+      mainAxisAlignment: MainAxisAlignment.center,
+      crossAxisAlignment: CrossAxisAlignment.center,
+      children: [
+        Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          crossAxisAlignment: CrossAxisAlignment.center,
+          children: [
+            Column(
+              mainAxisAlignment: MainAxisAlignment.start,
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text("Wind",style : titleFont,
+                  ),
+                
+                SizedBox(height:18.0),
+                Text(
+                  "Pressure",
+                  style: titleFont,
+                  )
+              ],),
+              Column(
+              mainAxisAlignment: MainAxisAlignment.start,
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  "$wind",
+                style : infoFont,
+                  ),
+                
+                SizedBox(height:18.0),
+                Text(
+                  "$pressure",
+                  style: infoFont,
+                  )
+              ],
+              ),
+              Column(
+              mainAxisAlignment: MainAxisAlignment.start,
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text("Humidity",style : titleFont,
+                  ),
+                
+                SizedBox(height:18.0),
+                Text(
+                  "Feels Like",
+                   style: titleFont,
+                  )
+              ],
+              ),
+              Column(
+              mainAxisAlignment: MainAxisAlignment.start,
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  "$humidity",
+                style : infoFont,
+                  ),
+                
+                SizedBox(height:18.0),
+                Text(
+                  "$feels_like",
+                  style: infoFont,
+                  )
+              ],
+              ),
+          ],
+          )
+      ],
+    ),
+  );
 }
