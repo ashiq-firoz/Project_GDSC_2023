@@ -50,3 +50,16 @@ class YourtreeIcon extends StatelessWidget {
     );
   }
 }
+
+class YourblueIcon extends StatelessWidget {
+  const YourblueIcon({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return Icon(
+      Icons.scatter_plot_outlined,
+      color: Colors.black,
+      size: 120.0,
+    );
+  }
+}
